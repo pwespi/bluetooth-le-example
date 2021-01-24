@@ -1,13 +1,12 @@
-import { loadingController } from '@ionic/core';
+import type {
+  BleDevice} from '@capacitor-community/bluetooth-le';
 import {
-  BleDevice,
   BleClient,
   numbersToDataView,
 } from '@capacitor-community/bluetooth-le';
+import { loadingController } from '@ionic/core';
 import { Component, h, State } from '@stencil/core';
-import { handleError } from '../../helpers/error';
-import { main } from '../../helpers/usage';
-import { resultToString, Target } from '../../helpers/helpers';
+
 import {
   HEART_RATE_SERVICE,
   POLAR_PMD_SERVICE,
@@ -17,6 +16,9 @@ import {
   POLAR_PMD_CONTROL_POINT,
   POLAR_PMD_DATA,
 } from '../../helpers/ble';
+import { handleError } from '../../helpers/error';
+import { resultToString, Target } from '../../helpers/helpers';
+import { main } from '../../helpers/usage';
 
 @Component({
   tag: 'app-home',

@@ -1,10 +1,12 @@
+import type {
+  BleDevice} from '@capacitor-community/bluetooth-le';
 import {
   BleClient,
-  BleDevice,
   numbersToDataView,
   ScanMode,
 } from '@capacitor-community/bluetooth-le';
 import { Capacitor } from '@capacitor/core';
+
 import {
   BATTERY_CHARACTERISTIC,
   BATTERY_SERVICE,
@@ -19,6 +21,7 @@ import {
   TEMPERATURE_CHARACTERISTIC,
   TEMPERATURE_SERVICE,
 } from '../helpers/ble';
+
 import { assert, describe, it, showAlert, sleep } from './testRunner';
 
 export async function testMultipleDevices() {

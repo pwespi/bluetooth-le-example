@@ -1,11 +1,14 @@
 import { Capacitor } from '@capacitor/core';
+
+import type {
+  RequestBleDeviceOptions,
+  ScanResult} from '../../../dist/esm';
 import {
   BleClient,
   numberToUUID,
-  RequestBleDeviceOptions,
-  ScanMode,
-  ScanResult,
+  ScanMode
 } from '../../../dist/esm';
+
 import { assert, describe, it, showAlert, sleep } from './testRunner';
 
 export async function testFilters() {

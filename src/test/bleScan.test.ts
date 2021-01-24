@@ -1,6 +1,9 @@
 import { Capacitor } from '@capacitor/core';
-import { BleClient, ScanResult } from '../../../dist/esm';
+
+import type { ScanResult } from '../../../dist/esm';
+import { BleClient } from '../../../dist/esm';
 import { HEART_RATE_SERVICE } from '../helpers/ble';
+
 import { assert, describe, it, showAlert, sleep } from './testRunner';
 
 export async function testBleScan() {

@@ -1,14 +1,14 @@
-import { loadingController } from '@ionic/core';
+import type {
+  BleDevice} from '@capacitor-community/bluetooth-le';
 import {
-  BleDevice,
   BleClient,
   dataViewToText,
   numberToUUID,
   ScanMode,
 } from '@capacitor-community/bluetooth-le';
+import { loadingController } from '@ionic/core';
 import { Component, h, State } from '@stencil/core';
-import { Target, resultToString } from '../../helpers/helpers';
-import { handleError } from '../../helpers/error';
+
 import {
   BATTERY_CHARACTERISTIC,
   BATTERY_SERVICE,
@@ -21,6 +21,8 @@ import {
   TEMPERATURE_CHARACTERISTIC,
   TEMPERATURE_SERVICE,
 } from '../../helpers/ble';
+import { handleError } from '../../helpers/error';
+import { Target, resultToString } from '../../helpers/helpers';
 
 @Component({
   tag: 'app-humigadget',

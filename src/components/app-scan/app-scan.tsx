@@ -1,18 +1,20 @@
-import { Component, Host, h, State } from '@stencil/core';
-import {
+import type {
   BleDevice,
+  ScanResult} from '@capacitor-community/bluetooth-le';
+import {
   BleClient,
-  ScanResult,
   dataViewToNumbers,
   ScanMode,
 } from '@capacitor-community/bluetooth-le';
 import { loadingController } from '@ionic/core';
-import { handleError } from '../../helpers/error';
-import { resultToString } from '../../helpers/helpers';
+import { Component, Host, h, State } from '@stencil/core';
+
 import {
   HEART_RATE_SERVICE,
   BODY_SENSOR_LOCATION_CHARACTERISTIC,
 } from '../../helpers/ble';
+import { handleError } from '../../helpers/error';
+import { resultToString } from '../../helpers/helpers';
 import { scan } from '../../helpers/usageScan';
 
 @Component({

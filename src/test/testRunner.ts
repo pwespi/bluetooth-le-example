@@ -140,7 +140,7 @@ export function assertEqualArray(a: any[], b: any[]): void {
     return;
   }
 
-  for (var i = 0; i < a.length; ++i) {
+  for (let i = 0; i < a.length; ++i) {
     if (a[i] !== b[i]) {
       assert(false);
       console.warn(a, 'is not equal', b);

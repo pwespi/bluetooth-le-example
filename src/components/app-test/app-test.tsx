@@ -1,13 +1,14 @@
-import { Component, Host, h, State } from '@stencil/core';
 import { loadingController } from '@ionic/core';
+import { Component, Host, h, State } from '@stencil/core';
+
 import { handleError } from '../../helpers/error';
 import { resultToString } from '../../helpers/helpers';
-import { testBleScan } from '../../test/bleScan.test';
-import { printResult, beforeAll } from '../../test/testRunner';
-import { testFilters } from '../../test/filter.test';
 import { testBleClient, testInit } from '../../test/bleClient.test';
+import { testBleScan } from '../../test/bleScan.test';
+import { testFilters } from '../../test/filter.test';
 import { testMultipleDevices } from '../../test/multipleDevices.test';
 import { testRunner } from '../../test/runner.test';
+import { printResult, beforeAll } from '../../test/testRunner';
 
 @Component({
   tag: 'app-test',
