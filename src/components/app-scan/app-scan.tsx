@@ -1,46 +1,44 @@
-import type {
-  BleDevice,
-  ScanResult} from '@capacitor-community/bluetooth-le';
+import type { BleDevice, ScanResult } from "@capacitor-community/bluetooth-le";
 import {
   BleClient,
   dataViewToNumbers,
   ScanMode,
-} from '@capacitor-community/bluetooth-le';
-import { loadingController } from '@ionic/core';
-import { Component, Host, h, State } from '@stencil/core';
+} from "@capacitor-community/bluetooth-le";
+import { loadingController } from "@ionic/core";
+import { Component, Host, h, State } from "@stencil/core";
 
 import {
   HEART_RATE_SERVICE,
   BODY_SENSOR_LOCATION_CHARACTERISTIC,
-} from '../../helpers/ble';
-import { handleError } from '../../helpers/error';
-import { resultToString } from '../../helpers/helpers';
-import { scan } from '../../helpers/usageScan';
+} from "../../helpers/ble";
+import { handleError } from "../../helpers/error";
+import { resultToString } from "../../helpers/helpers";
+import { scan } from "../../helpers/usageScan";
 
 @Component({
-  tag: 'app-scan',
+  tag: "app-scan",
 })
 export class AppScan {
-  @State() result: string;
+  @State() result = "";
   @State() devices: BleDevice[] = [];
 
-  device: BleDevice;
+  private deviceId = "";
 
-  actions: { label: string; action: () => Promise<any> }[] = [
+  private actions: { label: string; action: () => Promise<any> }[] = [
     {
-      label: 'initialize',
+      label: "initialize",
       action: () => {
         return BleClient.initialize();
       },
     },
     {
-      label: 'scan usage',
+      label: "scan usage",
       action: async () => {
         await scan();
       },
     },
     {
-      label: 'request scan',
+      label: "request scan",
       action: () => {
         this.devices = [];
         return BleClient.requestLEScan({}, result => {
@@ -50,7 +48,7 @@ export class AppScan {
       },
     },
     {
-      label: 'request scan HR',
+      label: "request scan HR",
       action: () => {
         this.devices = [];
         return BleClient.requestLEScan(
@@ -65,7 +63,7 @@ export class AppScan {
       },
     },
     {
-      label: 'request scan HR allowDuplicates',
+      label: "request scan HR allowDuplicates",
       action: () => {
         this.devices = [];
         return BleClient.requestLEScan(
@@ -82,7 +80,7 @@ export class AppScan {
     },
 
     {
-      label: 'request scan HR allowDuplicates, low latency',
+      label: "request scan HR allowDuplicates, low latency",
       action: () => {
         this.devices = [];
         return BleClient.requestLEScan(
@@ -99,61 +97,65 @@ export class AppScan {
       },
     },
     {
-      label: 'stop scan',
+      label: "stop scan",
       action: () => {
         return BleClient.stopLEScan();
       },
     },
     {
-      label: 'connect',
+      label: "connect",
       action: () => {
-        return BleClient.connect(this.device?.deviceId);
+        return BleClient.connect(this.deviceId);
       },
     },
     {
-      label: 'read body sensor location',
+      label: "read body sensor location",
       action: () => {
         return BleClient.read(
-          this.device?.deviceId,
+          this.deviceId,
           HEART_RATE_SERVICE,
           BODY_SENSOR_LOCATION_CHARACTERISTIC,
         );
       },
     },
     {
-      label: 'disconnect',
+      label: "disconnect",
       action: () => {
-        return BleClient.disconnect(this.device?.deviceId);
+        return BleClient.disconnect(this.deviceId);
       },
     },
   ];
 
-  logScanResult(result: ScanResult) {
+  private logScanResult(result: ScanResult) {
     try {
       console.log(
-        'result',
+        "result",
         result?.device?.name,
         JSON.stringify(result, null, 2),
       );
       for (const key of Object.keys(result?.manufacturerData ?? {})) {
         console.log(
-          'manufacturerData',
+          "manufacturerData",
           result?.device?.name,
           key,
-          dataViewToNumbers(result?.manufacturerData[key]),
+          result?.manufacturerData?.[key]
+            ? dataViewToNumbers(result?.manufacturerData?.[key])
+            : null,
         );
       }
       for (const key of Object.keys(result?.serviceData ?? {})) {
         console.log(
-          'serviceData',
+          "serviceData",
           result?.device?.name,
           key,
-          dataViewToNumbers(result?.serviceData[key]),
+          result?.serviceData?.[key]
+            ? dataViewToNumbers(result?.serviceData?.[key])
+            : null,
         );
       }
       if (result?.rawAdvertisement) {
         console.log(
-          'rawAdvertisement',
+          "rawAdvertisement",
           result?.device?.name,
           dataViewToNumbers(result.rawAdvertisement),
         );
@@ -163,7 +165,7 @@ export class AppScan {
     }
   }
 
-  async runAction(action: () => Promise<any>): Promise<void> {
+  private async runAction(action: () => Promise<any>): Promise<void> {
     const loading = await loadingController.create({});
     await loading.present();
     try {
@@ -175,7 +177,7 @@ export class AppScan {
     loading.dismiss();
   }
 
-  render() {
+  render(): any {
     return (
       <Host>
         <ion-header>
@@ -183,7 +185,6 @@ export class AppScan {
             <ion-title>Scanner</ion-title>
           </ion-toolbar>
         </ion-header>
-
         <ion-content class="ion-padding">
           <div class="ion-margin">Result: {this.result}</div>
 
@@ -194,8 +195,8 @@ export class AppScan {
           ))}
           <ion-list>
             {this.devices.map(d => (
-              <ion-item button onClick={() => (this.device = d)}>
-                {d.name ?? 'Unknown'}
+              <ion-item button onClick={() => (this.deviceId = d.deviceId)}>
+                {d.name ?? "Unknown"}
               </ion-item>
             ))}
           </ion-list>

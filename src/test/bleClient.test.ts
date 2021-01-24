@@ -1,11 +1,11 @@
-import type {
-  BleDevice} from '@capacitor-community/bluetooth-le';
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import type { BleDevice } from "@capacitor-community/bluetooth-le";
 import {
   BleClient,
   dataViewToNumbers,
   numbersToDataView,
-} from '@capacitor-community/bluetooth-le';
-import { Capacitor } from '@capacitor/core';
+} from "@capacitor-community/bluetooth-le";
+import { Capacitor } from "@capacitor/core";
 
 import {
   BATTERY_CHARACTERISTIC,
@@ -16,7 +16,7 @@ import {
   POLAR_PMD_CONTROL_POINT,
   POLAR_PMD_DATA,
   POLAR_PMD_SERVICE,
-} from '../helpers/ble';
+} from "../helpers/ble";
 
 import {
   assert,
@@ -26,62 +26,64 @@ import {
   it,
   showAlert,
   sleep,
-} from './testRunner';
+} from "./testRunner";
 
-export async function testInit() {
-  await describe('BleClient', async () => {
-    await it('should throw an error if not initialized on android or ios', async () => {
-      if (Capacitor.platform !== 'web') {
+export async function testInit(): Promise<void> {
+  await describe("BleClient", async () => {
+    await it("should throw an error if not initialized on android or ios", async () => {
+      if (Capacitor.platform !== "web") {
         const test = async () => {
-          await BleClient.connect('');
+          await BleClient.connect("");
         };
-        await expectError(test, 'not initialized');
+        await expectError(test, "not initialized");
       }
-      assert(!!BleClient);
+      assert(BleClient !== undefined);
     });
   });
 }
 
-export async function testBleClient() {
-  await describe('BleClient', async () => {
+export async function testBleClient(): Promise<void> {
+  await describe("BleClient", async () => {
     let device: BleDevice | null = null;
+    let deviceId = "";
 
-    await it('should initialize', async () => {
+    await it("should initialize", async () => {
       await BleClient.initialize();
-      assert(!!BleClient);
+      assert(BleClient !== undefined);
     });
 
-    await it('should request a device', async () => {
-      if (Capacitor.platform === 'web') {
+    await it("should request a device", async () => {
+      if (Capacitor.platform === "web") {
         // web requires user interaction for requestDevice
-        await showAlert('requestDevice');
+        await showAlert("requestDevice");
       }
       device = await BleClient.requestDevice({
         services: [HEART_RATE_SERVICE],
         optionalServices: [BATTERY_SERVICE, POLAR_PMD_SERVICE],
       });
-      assert(!!device);
-      assert(device.name.includes('Polar'));
-      assert(device.deviceId.length > 0);
+      deviceId = device.deviceId;
+      assert(device !== null);
+      assert(device.name?.includes("Polar") === true);
+      assert(deviceId.length > 0);
     });
 
-    await it('should connect', async () => {
-      await BleClient.connect(device.deviceId);
+    await it("should connect", async () => {
+      await BleClient.connect(deviceId);
       assert(!!device);
     });
 
-    await it('should read body sensor location', async () => {
+    await it("should read body sensor location", async () => {
       const result = await BleClient.read(
-        device.deviceId,
+        deviceId,
         HEART_RATE_SERVICE,
         BODY_SENSOR_LOCATION_CHARACTERISTIC,
       );
       assert(result.getUint8(0) === 1);
     });
 
-    await it('should read battery level', async () => {
+    await it("should read battery level", async () => {
       const result = await BleClient.read(
-        device.deviceId,
+        deviceId,
         BATTERY_SERVICE,
         BATTERY_CHARACTERISTIC,
       );
@@ -89,9 +91,9 @@ export async function testBleClient() {
       assert(batteryLevel > 10 && batteryLevel <= 100);
     });
 
-    await it('should write to control point', async () => {
+    await it("should write to control point", async () => {
       await BleClient.write(
-        device.deviceId,
+        deviceId,
         POLAR_PMD_SERVICE,
         POLAR_PMD_CONTROL_POINT,
         numbersToDataView([1, 0]),
@@ -99,9 +101,9 @@ export async function testBleClient() {
       assert(true);
     });
 
-    await it('should handle notifications', async () => {
+    await it("should handle notifications", async () => {
       await BleClient.startNotifications(
-        device.deviceId,
+        deviceId,
         HEART_RATE_SERVICE,
         HEART_RATE_MEASUREMENT_CHARACTERISTIC,
         value => {
@@ -111,14 +113,14 @@ export async function testBleClient() {
       );
       await sleep(5000);
       await BleClient.stopNotifications(
-        device.deviceId,
+        deviceId,
         HEART_RATE_SERVICE,
         HEART_RATE_MEASUREMENT_CHARACTERISTIC,
       );
       assert(true);
     });
 
-    await it('should read ECG', async () => {
+    await it("should read ECG", async () => {
       const ecg: DataView[] = [];
       let control: DataView | null = null;
 
@@ -126,7 +128,7 @@ export async function testBleClient() {
 
       // listen to control
       await BleClient.startNotifications(
-        device.deviceId,
+        deviceId,
         POLAR_PMD_SERVICE,
         POLAR_PMD_CONTROL_POINT,
         value => (control = value),
@@ -136,14 +138,14 @@ export async function testBleClient() {
 
       // get ecg settings
       await BleClient.write(
-        device.deviceId,
+        deviceId,
         POLAR_PMD_SERVICE,
         POLAR_PMD_CONTROL_POINT,
         numbersToDataView([1, 0]),
       );
       await sleep(300);
       assert(control !== null);
-      assertEqualArray(dataViewToNumbers(control), [
+      assertEqualArray(dataViewToNumbers(control!), [
         240,
         1,
         0,
@@ -161,7 +163,7 @@ export async function testBleClient() {
 
       // listen to data
       await BleClient.startNotifications(
-        device.deviceId,
+        deviceId,
         POLAR_PMD_SERVICE,
         POLAR_PMD_DATA,
         value => ecg.push(value),
@@ -173,47 +175,47 @@ export async function testBleClient() {
 
       // start stream
       await BleClient.write(
-        device.deviceId,
+        deviceId,
         POLAR_PMD_SERVICE,
         POLAR_PMD_CONTROL_POINT,
         numbersToDataView([2, 0, 0, 1, 130, 0, 1, 1, 14, 0]),
       );
       await sleep(300);
-      assertEqualArray(dataViewToNumbers(control), [240, 2, 0, 0, 0, 0]);
+      assertEqualArray(dataViewToNumbers(control!), [240, 2, 0, 0, 0, 0]);
 
       await sleep(10000);
-      if (Capacitor.platform === 'web') {
+      if (Capacitor.platform === "web") {
         await sleep(30000);
       }
       const length = ecg.length;
       assert(length >= 5);
-      console.log('length', ecg.length);
+      console.log("length", ecg.length);
       assert(ecg[length - 1].byteLength > 100);
-      console.log('bytelength', ecg[length - 1].byteLength);
+      console.log("bytelength", ecg[length - 1].byteLength);
 
       // stop stream
       await BleClient.write(
-        device.deviceId,
+        deviceId,
         POLAR_PMD_SERVICE,
         POLAR_PMD_CONTROL_POINT,
         numbersToDataView([3, 0]),
       );
       await sleep(300);
-      assertEqualArray(dataViewToNumbers(control), [240, 3, 0, 0, 0]);
+      assertEqualArray(dataViewToNumbers(control!), [240, 3, 0, 0, 0]);
 
       // should not receive any further values
       await sleep(3000);
       assert(ecg.length === length);
 
       await BleClient.stopNotifications(
-        device.deviceId,
+        deviceId,
         POLAR_PMD_SERVICE,
         POLAR_PMD_DATA,
       );
     });
 
-    await it('should disconnect', async () => {
-      await BleClient.disconnect(device.deviceId);
+    await it("should disconnect", async () => {
+      await BleClient.disconnect(deviceId);
       assert(true);
     });
   });

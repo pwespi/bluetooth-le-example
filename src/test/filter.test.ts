@@ -1,23 +1,23 @@
-import { Capacitor } from '@capacitor/core';
-
 import type {
   RequestBleDeviceOptions,
-  ScanResult} from '../../../dist/esm';
+  ScanResult,
+} from "@capacitor-community/bluetooth-le";
 import {
-  BleClient,
   numberToUUID,
-  ScanMode
-} from '../../../dist/esm';
+  BleClient,
+  ScanMode,
+} from "@capacitor-community/bluetooth-le";
+import { Capacitor } from "@capacitor/core";
 
-import { assert, describe, it, showAlert, sleep } from './testRunner';
+import { assert, describe, it, showAlert, sleep } from "./testRunner";
 
-export async function testFilters() {
-  await describe('Scan filters', async () => {
-    await it('should find lots of devices without filter', async () => {
+export async function testFilters(): Promise<void> {
+  await describe("Scan filters", async () => {
+    await it("should find lots of devices without filter", async () => {
       await scan({}, 5);
     });
 
-    await it('should filter by service', async () => {
+    await it("should filter by service", async () => {
       await scan(
         {
           services: [numberToUUID(0x1822)],
@@ -32,37 +32,37 @@ export async function testFilters() {
       );
     });
 
-    await it('should filter by name', async () => {
+    await it("should filter by name", async () => {
       await scan(
         {
-          name: 'zyx',
+          name: "zyx",
         },
         1,
       );
       await scan(
         {
-          name: 'ZYX',
+          name: "ZYX",
         },
         0,
       );
     });
 
-    await it('should filter by namePrefix', async () => {
+    await it("should filter by namePrefix", async () => {
       await scan(
         {
-          namePrefix: 'zy',
+          namePrefix: "zy",
         },
         1,
       );
       await scan(
         {
-          namePrefix: 'ZY',
+          namePrefix: "ZY",
         },
         0,
       );
     });
 
-    await it('should filter by multiple services', async () => {
+    await it("should filter by multiple services", async () => {
       await scan(
         {
           services: [numberToUUID(0x180d), numberToUUID(0x1822)],
@@ -81,32 +81,32 @@ export async function testFilters() {
       );
     });
 
-    await it('should filter by combinations', async () => {
+    await it("should filter by combinations", async () => {
       await scan(
         {
           services: [numberToUUID(0x180d), numberToUUID(0x1822)],
-          name: 'zyx',
+          name: "zyx",
         },
         1,
       );
       await scan(
         {
           services: [numberToUUID(0x180d), numberToUUID(0x1822)],
-          name: 'zyx2',
+          name: "zyx2",
         },
         0,
       );
       await scan(
         {
           services: [numberToUUID(0x180d), numberToUUID(0x1822)],
-          namePrefix: 'zy',
+          namePrefix: "zy",
         },
         1,
       );
       await scan(
         {
           services: [numberToUUID(0x180d), numberToUUID(0x1822)],
-          namePrefix: 'zyx2',
+          namePrefix: "zyx2",
         },
         0,
       );
@@ -118,7 +118,7 @@ async function scan(
   options: RequestBleDeviceOptions,
   expectedNumberOfResults: number,
 ): Promise<void> {
-  if (Capacitor.platform === 'web') {
+  if (Capacitor.platform === "web") {
     await showAlert(expectedNumberOfResults.toString());
     try {
       await BleClient.requestDevice(options);
@@ -129,7 +129,7 @@ async function scan(
     const results: ScanResult[] = [];
     options.scanMode = ScanMode.SCAN_MODE_LOW_LATENCY;
     await BleClient.requestLEScan(options, result => {
-      if (result) {
+      if (result !== undefined) {
         results.push(result);
       }
     });
@@ -142,9 +142,9 @@ async function scan(
       assert(results.length === expectedNumberOfResults);
       if (results.length !== expectedNumberOfResults) {
         console.error(
-          'expected',
+          "expected",
           expectedNumberOfResults,
-          'received',
+          "received",
           results.length,
         );
       }

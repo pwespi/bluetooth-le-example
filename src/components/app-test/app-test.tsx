@@ -1,25 +1,25 @@
-import { loadingController } from '@ionic/core';
-import { Component, Host, h, State } from '@stencil/core';
+import { loadingController } from "@ionic/core";
+import { Component, Host, h, State } from "@stencil/core";
 
-import { handleError } from '../../helpers/error';
-import { resultToString } from '../../helpers/helpers';
-import { testBleClient, testInit } from '../../test/bleClient.test';
-import { testBleScan } from '../../test/bleScan.test';
-import { testFilters } from '../../test/filter.test';
-import { testMultipleDevices } from '../../test/multipleDevices.test';
-import { testRunner } from '../../test/runner.test';
-import { printResult, beforeAll } from '../../test/testRunner';
+import { handleError } from "../../helpers/error";
+import { resultToString } from "../../helpers/helpers";
+import { testBleClient, testInit } from "../../test/bleClient.test";
+import { testBleScan } from "../../test/bleScan.test";
+import { testFilters } from "../../test/filter.test";
+import { testMultipleDevices } from "../../test/multipleDevices.test";
+import { testRunner } from "../../test/runner.test";
+import { printResult, beforeAll } from "../../test/testRunner";
 
 @Component({
-  tag: 'app-test',
-  styleUrl: 'app-test.css',
+  tag: "app-test",
+  styleUrl: "app-test.css",
 })
 export class AppTest {
-  @State() result: string;
+  @State() result = "";
 
-  actions: { label: string; action: () => Promise<any> }[] = [
+  private actions: { label: string; action: () => Promise<any> }[] = [
     {
-      label: 'test all',
+      label: "test all",
       action: async () => {
         beforeAll();
         await testInit();
@@ -32,7 +32,7 @@ export class AppTest {
       },
     },
     {
-      label: 'test init',
+      label: "test init",
       action: async () => {
         beforeAll();
         await testInit();
@@ -41,7 +41,7 @@ export class AppTest {
       },
     },
     {
-      label: 'test ble client',
+      label: "test ble client",
       action: async () => {
         beforeAll();
         await testBleClient();
@@ -50,7 +50,7 @@ export class AppTest {
       },
     },
     {
-      label: 'test multiple dev',
+      label: "test multiple dev",
       action: async () => {
         beforeAll();
         await testMultipleDevices();
@@ -59,7 +59,7 @@ export class AppTest {
       },
     },
     {
-      label: 'test scan',
+      label: "test scan",
       action: async () => {
         beforeAll();
         await testBleScan();
@@ -68,7 +68,7 @@ export class AppTest {
       },
     },
     {
-      label: 'test filters',
+      label: "test filters",
       action: async () => {
         beforeAll();
         await testFilters();
@@ -77,7 +77,7 @@ export class AppTest {
       },
     },
     {
-      label: '(test runner)',
+      label: "(test runner)",
       action: async () => {
         beforeAll();
         await testRunner();
@@ -87,11 +87,11 @@ export class AppTest {
     },
   ];
 
-  async runAction(action: () => Promise<any>): Promise<void> {
+  private async runAction(action: () => Promise<any>): Promise<void> {
     const loading = await loadingController.create({});
     await loading.present();
     try {
-      this.result = '';
+      this.result = "";
       const result = await action();
       this.result = resultToString(result);
     } catch (error) {
@@ -100,7 +100,7 @@ export class AppTest {
     loading.dismiss();
   }
 
-  render() {
+  render(): any {
     return (
       <Host>
         <ion-header>
@@ -108,10 +108,8 @@ export class AppTest {
             <ion-title>Test</ion-title>
           </ion-toolbar>
         </ion-header>
-
         <ion-content class="ion-padding">
           <div class="ion-margin result">{this.result}</div>
-
           {this.actions.map(action => (
             <ion-button onClick={() => this.runAction(action.action)}>
               {action.label}

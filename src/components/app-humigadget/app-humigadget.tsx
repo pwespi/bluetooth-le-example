@@ -1,13 +1,11 @@
-import type {
-  BleDevice} from '@capacitor-community/bluetooth-le';
 import {
   BleClient,
   dataViewToText,
   numberToUUID,
   ScanMode,
-} from '@capacitor-community/bluetooth-le';
-import { loadingController } from '@ionic/core';
-import { Component, h, State } from '@stencil/core';
+} from "@capacitor-community/bluetooth-le";
+import { loadingController } from "@ionic/core";
+import { Component, h, Host, State } from "@stencil/core";
 
 import {
   BATTERY_CHARACTERISTIC,
@@ -20,25 +18,23 @@ import {
   MANUFACTURER_NAME_CHARACTERISTIC,
   TEMPERATURE_CHARACTERISTIC,
   TEMPERATURE_SERVICE,
-} from '../../helpers/ble';
-import { handleError } from '../../helpers/error';
-import { Target, resultToString } from '../../helpers/helpers';
+} from "../../helpers/ble";
+import { handleError } from "../../helpers/error";
+import { Target, resultToString } from "../../helpers/helpers";
 
 @Component({
-  tag: 'app-humigadget',
+  tag: "app-humigadget",
 })
 export class AppHumigadget {
-  @State() result: string;
-  @State() notification1: string;
-  @State() notification2: string;
+  @State() result = "";
+  @State() notification1 = "";
+  @State() notification2 = "";
 
-  DEVICE_ID = 'DA:8F:8E:31:DC:48';
+  private deviceId = "";
 
-  device: BleDevice;
-
-  actions: { label: string; action: () => Promise<any> }[] = [
+  private actions: { label: string; action: () => Promise<any> }[] = [
     {
-      label: 'request device',
+      label: "request device",
       action: async () => {
         const result = await BleClient.requestDevice({
           optionalServices: [
@@ -49,33 +45,15 @@ export class AppHumigadget {
             HUMIDITY_SERVICE,
           ],
         });
-        this.device = result;
+        this.deviceId = result.deviceId;
         return result;
       },
     },
     {
-      label: 'request device (by name)',
+      label: "request device (by name)",
       action: async () => {
         const result = await BleClient.requestDevice({
-          name: 'Smart Humigadget',
-          optionalServices: [
-            GENERIC_SERVICE,
-            DEVICE_INFORMATION_SERVICE,
-            BATTERY_SERVICE,
-            TEMPERATURE_SERVICE,
-            HUMIDITY_SERVICE,
-          ],
-          scanMode: ScanMode.SCAN_MODE_LOW_LATENCY,
-        });
-        this.device = result;
-        return result;
-      },
-    },
-    {
-      label: 'request device (by name prefix)',
-      action: async () => {
-        const result = await BleClient.requestDevice({
-          namePrefix: 'Smart H',
+          name: "Smart Humigadget",
           optionalServices: [
             GENERIC_SERVICE,
             DEVICE_INFORMATION_SERVICE,
@@ -85,22 +63,40 @@ export class AppHumigadget {
           ],
           scanMode: ScanMode.SCAN_MODE_LOW_LATENCY,
         });
-        this.device = result;
+        this.deviceId = result.deviceId;
         return result;
       },
     },
     {
-      label: 'request device (filter test and)',
+      label: "request device (by name prefix)",
+      action: async () => {
+        const result = await BleClient.requestDevice({
+          namePrefix: "Smart H",
+          optionalServices: [
+            GENERIC_SERVICE,
+            DEVICE_INFORMATION_SERVICE,
+            BATTERY_SERVICE,
+            TEMPERATURE_SERVICE,
+            HUMIDITY_SERVICE,
+          ],
+          scanMode: ScanMode.SCAN_MODE_LOW_LATENCY,
+        });
+        this.deviceId = result.deviceId;
+        return result;
+      },
+    },
+    {
+      label: "request device (filter test and)",
       action: async () => {
         const result = await BleClient.requestDevice({
           services: [numberToUUID(0x1810), numberToUUID(0x1822)],
         });
-        this.device = result;
+        this.deviceId = result.deviceId;
         return result;
       },
     },
     {
-      label: 'request device (filter test or)',
+      label: "request device (filter test or)",
       action: async () => {
         const result = await BleClient.requestDevice({
           services: [
@@ -109,51 +105,51 @@ export class AppHumigadget {
             numberToUUID(0x1823),
           ],
         });
-        this.device = result;
+        this.deviceId = result.deviceId;
         return result;
       },
     },
     {
-      label: 'request device (filter test or with name)',
+      label: "request device (filter test or with name)",
       action: async () => {
         const result = await BleClient.requestDevice({
-          name: 'zyx',
+          name: "zyx",
           services: [
             numberToUUID(0x1810),
             numberToUUID(0x1822),
             numberToUUID(0x1823),
           ],
         });
-        this.device = result;
+        this.deviceId = result.deviceId;
         return result;
       },
     },
     {
-      label: 'request device (filter test or with name 2)',
+      label: "request device (filter test or with name 2)",
       action: async () => {
         const result = await BleClient.requestDevice({
-          name: 'zyx2',
+          name: "zyx2",
           services: [
             numberToUUID(0x1810),
             numberToUUID(0x1822),
             numberToUUID(0x1823),
           ],
         });
-        this.device = result;
+        this.deviceId = result.deviceId;
         return result;
       },
     },
     {
-      label: 'connect',
+      label: "connect",
       action: () => {
-        return BleClient.connect(this.device?.deviceId);
+        return BleClient.connect(this.deviceId);
       },
     },
     {
-      label: 'read device name',
+      label: "read device name",
       action: async () => {
         const result = await BleClient.read(
-          this.device?.deviceId,
+          this.deviceId,
           GENERIC_SERVICE,
           DEVICE_NAME_CHARACTERISTIC,
         );
@@ -161,10 +157,10 @@ export class AppHumigadget {
       },
     },
     {
-      label: 'read manufacturer name',
+      label: "read manufacturer name",
       action: async () => {
         const result = await BleClient.read(
-          this.device?.deviceId,
+          this.deviceId,
           DEVICE_INFORMATION_SERVICE,
           MANUFACTURER_NAME_CHARACTERISTIC,
         );
@@ -172,10 +168,10 @@ export class AppHumigadget {
       },
     },
     {
-      label: 'read battery',
+      label: "read battery",
       action: async () => {
         const value = await BleClient.read(
-          this.device?.deviceId,
+          this.deviceId,
           BATTERY_SERVICE,
           BATTERY_CHARACTERISTIC,
         );
@@ -183,10 +179,10 @@ export class AppHumigadget {
       },
     },
     {
-      label: 'read temperature',
+      label: "read temperature",
       action: async () => {
         const value = await BleClient.read(
-          this.device?.deviceId,
+          this.deviceId,
           TEMPERATURE_SERVICE,
           TEMPERATURE_CHARACTERISTIC,
         );
@@ -194,10 +190,10 @@ export class AppHumigadget {
       },
     },
     {
-      label: 'read humidity',
+      label: "read humidity",
       action: async () => {
         const value = await BleClient.read(
-          this.device?.deviceId,
+          this.deviceId,
           HUMIDITY_SERVICE,
           HUMIDITY_CHARACTERISTIC,
         );
@@ -205,14 +201,14 @@ export class AppHumigadget {
       },
     },
     {
-      label: 'disconnect',
+      label: "disconnect",
       action: () => {
-        return BleClient.disconnect(this.device?.deviceId);
+        return BleClient.disconnect(this.deviceId);
       },
     },
   ];
 
-  async runAction(action: () => Promise<any>): Promise<void> {
+  private async runAction(action: () => Promise<any>): Promise<void> {
     const loading = await loadingController.create({});
     await loading.present();
     try {
@@ -224,7 +220,7 @@ export class AppHumigadget {
     loading.dismiss();
   }
 
-  showResult(result: any, target: Target = Target.RESULT): void {
+  private showResult(result: any, target: Target = Target.RESULT): void {
     console.log(result);
     const resultString = resultToString(result);
     if (target === Target.RESULT) {
@@ -236,25 +232,26 @@ export class AppHumigadget {
     }
   }
 
-  render() {
-    return [
-      <ion-header>
-        <ion-toolbar color="primary">
-          <ion-title>Humigadget</ion-title>
-        </ion-toolbar>
-      </ion-header>,
+  render(): any {
+    return (
+      <Host>
+        <ion-header>
+          <ion-toolbar color="primary">
+            <ion-title>Humigadget</ion-title>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content class="ion-padding">
+          <div class="ion-margin">Result: {this.result}</div>
+          <div class="ion-margin">Notification1: {this.notification1}</div>
+          <div class="ion-margin">Notification2: {this.notification2}</div>
 
-      <ion-content class="ion-padding">
-        <div class="ion-margin">Result: {this.result}</div>
-        <div class="ion-margin">Notification1: {this.notification1}</div>
-        <div class="ion-margin">Notification2: {this.notification2}</div>
-
-        {this.actions.map(action => (
-          <ion-button onClick={() => this.runAction(action.action)}>
-            {action.label}
-          </ion-button>
-        ))}
-      </ion-content>,
-    ];
+          {this.actions.map(action => (
+            <ion-button onClick={() => this.runAction(action.action)}>
+              {action.label}
+            </ion-button>
+          ))}
+        </ion-content>
+      </Host>
+    );
   }
 }

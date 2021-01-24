@@ -1,4 +1,4 @@
-import { alertController, loadingController } from '@ionic/core';
+import { alertController, loadingController } from "@ionic/core";
 
 const initialState = {
   suites: {
@@ -14,14 +14,14 @@ const initialState = {
     passed: 0,
   },
   currentSuite: {
-    name: '',
+    name: "",
     tests: {
       total: 0,
       passed: 0,
     },
   },
   currentTest: {
-    name: '',
+    name: "",
     assertions: {
       total: 0,
       passed: 0,
@@ -32,7 +32,7 @@ const initialState = {
 
 let state: typeof initialState;
 
-export function beforeAll() {
+export function beforeAll(): void {
   state = JSON.parse(JSON.stringify(initialState));
   state.startTime = new Date().getTime();
 }
@@ -44,14 +44,17 @@ export function printResult(): string {
   Assertions:  ${state.assertions.passed} / ${state.assertions.total} passed
   Time:        ${(new Date().getTime() - state.startTime) / 1000} seconds
   Result:      ${
-    state.suites.passed === state.suites.total ? 'PASSED' : 'FAILED'
+    state.suites.passed === state.suites.total ? "PASSED" : "FAILED"
   }
   `;
   console.log(result);
   return result;
 }
 
-export async function describe(name: string, testSuite: () => void) {
+export async function describe(
+  name: string,
+  testSuite: () => void,
+): Promise<void> {
   state.currentSuite = JSON.parse(JSON.stringify(initialState.currentSuite));
   state.currentSuite.name = name;
   state.suites.total += 1;
@@ -64,7 +67,10 @@ export async function describe(name: string, testSuite: () => void) {
   }
 }
 
-export async function it(message: string, test: () => void | Promise<void>) {
+export async function it(
+  message: string,
+  test: () => void | Promise<void>,
+): Promise<void> {
   state.currentTest = JSON.parse(JSON.stringify(initialState.currentTest));
   state.currentTest.name = message;
 
@@ -89,11 +95,11 @@ export async function it(message: string, test: () => void | Promise<void>) {
 export async function expectError(
   test: () => void | Promise<void>,
   errorMessage?: string,
-) {
+): Promise<void> {
   try {
     await test();
   } catch (error) {
-    if (errorMessage) {
+    if (errorMessage !== undefined) {
       assert((error.message as string).includes(errorMessage));
     } else {
       assert(true);
@@ -120,7 +126,7 @@ export function assert(condition: boolean): void {
 export function assertEqual(a: any, b: any): void {
   assert(a === b);
   if (a !== b) {
-    console.warn(a, 'is not equal', b);
+    console.warn(a, "is not equal", b);
   }
 }
 
@@ -131,19 +137,19 @@ export function assertEqualArray(a: any[], b: any[]): void {
   }
   if (a == null || b == null) {
     assert(false);
-    console.warn(a, 'is not equal', b);
+    console.warn(a, "is not equal", b);
     return;
   }
   if (a.length !== b.length) {
     assert(false);
-    console.warn(a, 'is not equal', b);
+    console.warn(a, "is not equal", b);
     return;
   }
 
   for (let i = 0; i < a.length; ++i) {
     if (a[i] !== b[i]) {
       assert(false);
-      console.warn(a, 'is not equal', b);
+      console.warn(a, "is not equal", b);
       return;
     }
   }
@@ -162,12 +168,12 @@ export async function sleep(time: number): Promise<void> {
  * Some Bluetooth Web APIs need user interaction
  * @param message
  */
-export async function showAlert(message: string) {
+export async function showAlert(message: string): Promise<void> {
   const loading = await loadingController.getTop();
   await loading?.dismiss();
   const alert = await alertController.create({
     message,
-    buttons: ['OK'],
+    buttons: ["OK"],
   });
   await alert.present();
   await alert.onDidDismiss();

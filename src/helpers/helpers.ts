@@ -1,4 +1,4 @@
-import { dataViewToNumbers } from '@capacitor-community/bluetooth-le';
+import { dataViewToNumbers } from "@capacitor-community/bluetooth-le";
 
 export enum Target {
   RESULT = 0,
@@ -7,9 +7,9 @@ export enum Target {
 }
 
 export function resultToString(result: any): string {
-  let resultString = '' + result;
-  if (result?.toString && result.toString().includes('DataView')) {
-    resultString += ' ' + dataViewToNumbers(result);
+  let resultString = "" + result;
+  if (result?.toString && result.toString().includes("DataView")) {
+    resultString += " " + dataViewToNumbers(result);
   }
   return resultString;
 }

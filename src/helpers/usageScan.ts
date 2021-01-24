@@ -1,8 +1,8 @@
-import { BleClient, numberToUUID } from '@capacitor-community/bluetooth-le';
+import { BleClient, numberToUUID } from "@capacitor-community/bluetooth-le";
 
 const HEART_RATE_SERVICE = numberToUUID(0x180d);
 
-export async function scan() {
+export async function scan(): Promise<void> {
   try {
     await BleClient.initialize();
 
@@ -11,13 +11,13 @@ export async function scan() {
         services: [HEART_RATE_SERVICE],
       },
       result => {
-        console.log('received new scan result', result);
+        console.log("received new scan result", result);
       },
     );
 
     setTimeout(async () => {
       await BleClient.stopLEScan();
-      console.log('stopped scanning');
+      console.log("stopped scanning");
     }, 5000);
   } catch (error) {
     console.error(error);
