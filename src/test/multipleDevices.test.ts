@@ -148,7 +148,7 @@ export async function testMultipleDevices(): Promise<void> {
     await it("should disconnect", async () => {
       await BleClient.disconnect(device1!.deviceId);
       await BleClient.disconnect(device2!.deviceId);
-      await assert(true);
+      assert(true);
     });
   });
 }

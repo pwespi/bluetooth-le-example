@@ -47,17 +47,17 @@ export async function testRunner(): Promise<void> {
         throw new Error("some message");
       };
       await test();
-      await assert(true);
+      assert(true);
     });
 
     await it("should use assertEqual", async () => {
-      await assertEqual(1, 1);
-      await assertEqual(1, 2);
+      assertEqual(1, 1);
+      assertEqual(1, 2);
     });
 
     await it("should compare arrays", async () => {
-      await assertEqualArray([1, 0], [1, 0]);
-      await assertEqualArray([1, 0], [1, 2]);
+      assertEqualArray([1, 0], [1, 0]);
+      assertEqualArray([1, 0], [1, 2]);
     });
   });
 }
