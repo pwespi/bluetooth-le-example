@@ -31,7 +31,7 @@ import {
 export async function testInit(): Promise<void> {
   await describe("BleClient", async () => {
     await it("should throw an error if not initialized on android or ios", async () => {
-      if (Capacitor.platform !== "web") {
+      if (Capacitor.getPlatform() !== "web") {
         const test = async () => {
           await BleClient.connect("");
         };
@@ -53,7 +53,7 @@ export async function testBleClient(): Promise<void> {
     });
 
     await it("should request a device", async () => {
-      if (Capacitor.platform === "web") {
+      if (Capacitor.getPlatform() === "web") {
         // web requires user interaction for requestDevice
         await showAlert("requestDevice");
       }
@@ -184,7 +184,7 @@ export async function testBleClient(): Promise<void> {
       assertEqualArray(dataViewToNumbers(control!), [240, 2, 0, 0, 0, 0]);
 
       await sleep(10000);
-      if (Capacitor.platform === "web") {
+      if (Capacitor.getPlatform() === "web") {
         await sleep(30000);
       }
       const length = ecg.length;

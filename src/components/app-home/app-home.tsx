@@ -43,6 +43,27 @@ export class AppHome {
       },
     },
     {
+      label: "get enabled",
+      action: async () => {
+        const result = await BleClient.getEnabled();
+        return result;
+      },
+    },
+    {
+      label: "start enabled notifications",
+      action: () => {
+        return BleClient.startEnabledNotifications(state =>
+          this.showResult(state),
+        );
+      },
+    },
+    {
+      label: "stop enabled notifications",
+      action: () => {
+        return BleClient.stopEnabledNotifications();
+      },
+    },
+    {
       label: "request device (all)",
       action: async () => {
         const result = await BleClient.requestDevice();

@@ -11,7 +11,7 @@ export async function testBleScan(): Promise<void> {
   await describe("Ble Scan", async () => {
     await it("should find test device with correct adv. data", async () => {
       const results: ScanResult[] = [];
-      if (Capacitor.platform === "web") {
+      if (Capacitor.getPlatform() === "web") {
         // web requires user interaction
         await showAlert("requestLEScan");
       }
@@ -45,7 +45,7 @@ export async function testBleScan(): Promise<void> {
       assert(serviceData.getUint8(1) === 0);
       assert(serviceData.getUint8(2) === 238);
       assert(scanResult!.uuids![0] === "0000180d-0000-1000-8000-00805f9b34fb");
-      if (Capacitor.platform === "android") {
+      if (Capacitor.getPlatform() === "android") {
         assert(scanResult!.rawAdvertisement!.byteLength > 10);
       }
     });

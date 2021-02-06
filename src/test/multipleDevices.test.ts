@@ -35,7 +35,7 @@ export async function testMultipleDevices(): Promise<void> {
     });
 
     await it("should request two devices", async () => {
-      if (Capacitor.platform === "web") {
+      if (Capacitor.getPlatform() === "web") {
         // web requires user interaction for requestDevice
         await showAlert("requestDevice");
       }
@@ -48,7 +48,7 @@ export async function testMultipleDevices(): Promise<void> {
       assert(device1.name!.includes("Polar"));
       assert(device1.deviceId.length > 0);
 
-      if (Capacitor.platform === "web") {
+      if (Capacitor.getPlatform() === "web") {
         // web requires user interaction for requestDevice
         await showAlert("requestDevice");
       }

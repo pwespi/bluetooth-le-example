@@ -8,6 +8,7 @@ import { testBleScan } from "../../test/bleScan.test";
 import { testFilters } from "../../test/filter.test";
 import { testMultipleDevices } from "../../test/multipleDevices.test";
 import { testRunner } from "../../test/runner.test";
+import { testEnabled } from "../../test/enabled.test";
 import { printResult, beforeAll } from "../../test/testRunner";
 
 @Component({
@@ -24,6 +25,7 @@ export class AppTest {
         beforeAll();
         await testInit();
         await testBleClient();
+        await testEnabled();
         await testMultipleDevices();
         await testBleScan();
         await testFilters();
@@ -45,6 +47,15 @@ export class AppTest {
       action: async () => {
         beforeAll();
         await testBleClient();
+        const result = printResult();
+        return result;
+      },
+    },
+    {
+      label: "test state",
+      action: async () => {
+        beforeAll();
+        await testEnabled();
         const result = printResult();
         return result;
       },

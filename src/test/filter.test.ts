@@ -118,7 +118,7 @@ async function scan(
   options: RequestBleDeviceOptions,
   expectedNumberOfResults: number,
 ): Promise<void> {
-  if (Capacitor.platform === "web") {
+  if (Capacitor.getPlatform() === "web") {
     await showAlert(expectedNumberOfResults.toString());
     try {
       await BleClient.requestDevice(options);
