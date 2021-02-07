@@ -147,6 +147,7 @@ async function scan(
           "received",
           results.length,
         );
+        console.log("results", results);
       }
     }
   }

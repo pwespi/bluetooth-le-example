@@ -120,6 +120,45 @@ export async function testBleClient(): Promise<void> {
       assert(true);
     });
 
+    await it("should receive notifications only once", async () => {
+      let count = 0;
+      await sleep(300);
+      await BleClient.startNotifications(
+        deviceId,
+        HEART_RATE_SERVICE,
+        HEART_RATE_MEASUREMENT_CHARACTERISTIC,
+        value => {
+          const hr = value.getUint8(1);
+          count += 1;
+          assert(hr > 50 && hr < 100);
+        },
+      );
+      await sleep(300);
+      await BleClient.stopNotifications(
+        deviceId,
+        HEART_RATE_SERVICE,
+        HEART_RATE_MEASUREMENT_CHARACTERISTIC,
+      );
+      await sleep(300);
+      await BleClient.startNotifications(
+        deviceId,
+        HEART_RATE_SERVICE,
+        HEART_RATE_MEASUREMENT_CHARACTERISTIC,
+        value => {
+          const hr = value.getUint8(1);
+          count += 1;
+          assert(hr > 50 && hr < 100);
+        },
+      );
+      await sleep(5000);
+      await BleClient.stopNotifications(
+        deviceId,
+        HEART_RATE_SERVICE,
+        HEART_RATE_MEASUREMENT_CHARACTERISTIC,
+      );
+      assert(count >= 5 && count < 8);
+    });
+
     await it("should read ECG", async () => {
       const ecg: DataView[] = [];
       let control: DataView | null = null;
@@ -217,6 +256,20 @@ export async function testBleClient(): Promise<void> {
     await it("should disconnect", async () => {
       await BleClient.disconnect(deviceId);
       assert(true);
+    });
+
+    await it("should receive disconnected event", async () => {
+      let receivedDisconnectedEvent = false;
+      let disconnectedFrom = "";
+      await BleClient.connect(deviceId, disconnectedDeviceId => {
+        disconnectedFrom = disconnectedDeviceId;
+        receivedDisconnectedEvent = true;
+      });
+      assert(receivedDisconnectedEvent === false);
+      assert(disconnectedFrom === "");
+      await BleClient.disconnect(deviceId);
+      assert((receivedDisconnectedEvent as boolean) === true);
+      assert(disconnectedFrom === deviceId);
     });
   });
 }

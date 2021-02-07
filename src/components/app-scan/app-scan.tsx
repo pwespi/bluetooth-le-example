@@ -32,6 +32,12 @@ export class AppScan {
       },
     },
     {
+      label: "clear",
+      action: async () => {
+        this.devices = [];
+      },
+    },
+    {
       label: "scan usage",
       action: async () => {
         await scan();

@@ -141,8 +141,10 @@ export class AppHumigadget {
     },
     {
       label: "connect",
-      action: () => {
-        return BleClient.connect(this.deviceId);
+      action: async () => {
+        return BleClient.connect(this.deviceId, () =>
+          console.log("disconnected event"),
+        );
       },
     },
     {
@@ -202,8 +204,10 @@ export class AppHumigadget {
     },
     {
       label: "disconnect",
-      action: () => {
-        return BleClient.disconnect(this.deviceId);
+      action: async () => {
+        console.log("start disconnecting");
+        await BleClient.disconnect(this.deviceId);
+        console.log("disconnected");
       },
     },
   ];

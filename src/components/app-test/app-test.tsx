@@ -52,7 +52,7 @@ export class AppTest {
       },
     },
     {
-      label: "test state",
+      label: "test enabled",
       action: async () => {
         beforeAll();
         await testEnabled();

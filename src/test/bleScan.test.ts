@@ -13,6 +13,9 @@ export async function testBleScan(): Promise<void> {
       const results: ScanResult[] = [];
       if (Capacitor.getPlatform() === "web") {
         // web requires user interaction
+        console.log(
+          `await navigator.bluetooth.requestLEScan({ filters: [{ services: ['0000180d-0000-1000-8000-00805f9b34fb'] }] })`,
+        );
         await showAlert("requestLEScan");
       }
       await BleClient.requestLEScan(
@@ -48,6 +51,65 @@ export async function testBleScan(): Promise<void> {
       if (Capacitor.getPlatform() === "android") {
         assert(scanResult!.rawAdvertisement!.byteLength > 10);
       }
+    });
+
+    await it("should allow duplicates", async () => {
+      const results: ScanResult[] = [];
+      if (Capacitor.getPlatform() === "web") {
+        // web requires user interaction
+        console.log(
+          `await navigator.bluetooth.requestLEScan({ filters: [{ services: ['0000180d-0000-1000-8000-00805f9b34fb'], keepRepeatedDevices: true, namePrefix: 'zyx' }] })`,
+        );
+        await showAlert("requestLEScan");
+      }
+      await BleClient.requestLEScan(
+        {
+          services: [HEART_RATE_SERVICE],
+          namePrefix: "zyx",
+          allowDuplicates: true,
+        },
+        result => {
+          results.push(result);
+        },
+      );
+      await sleep(5000);
+      await BleClient.stopLEScan();
+      console.log("results", results);
+      assert(results.length > 1);
+      results.forEach(r => {
+        assert(r.device.name === "zyx");
+      });
+    });
+
+    await it("should get results only once", async () => {
+      const results: ScanResult[] = [];
+      if (Capacitor.getPlatform() === "web") {
+        // web requires user interaction
+        await showAlert("requestLEScan");
+      }
+      await BleClient.requestLEScan(
+        {
+          services: [HEART_RATE_SERVICE],
+          namePrefix: "zyx",
+        },
+        () => {
+          //
+        },
+      );
+      await BleClient.stopLEScan();
+      await BleClient.requestLEScan(
+        {
+          services: [HEART_RATE_SERVICE],
+          namePrefix: "zyx",
+        },
+        result => {
+          results.push(result);
+        },
+      );
+      await sleep(5000);
+      await BleClient.stopLEScan();
+      assert(results.length === 1);
+      assert(results[0].device.name === "zyx");
     });
   });
 }
