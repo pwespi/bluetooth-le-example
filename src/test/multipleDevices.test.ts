@@ -123,7 +123,7 @@ export async function testMultipleDevices(): Promise<void> {
           const t = value.getFloat32(0, true);
           tCount += 1;
           console.log("temp", t);
-          assert(t > 19 && t < 25);
+          assert(t > 19 && t < 28);
         },
       );
 
@@ -149,6 +149,29 @@ export async function testMultipleDevices(): Promise<void> {
       await BleClient.disconnect(device1!.deviceId);
       await BleClient.disconnect(device2!.deviceId);
       assert(true);
+    });
+
+    await it("should receive disconnected event when device is turned off", async () => {
+      // wait after disconnect above
+      await sleep(5000);
+      let receivedDisconnectedEvent = false;
+      let disconnectedFrom = "";
+      await BleClient.connect(device2!.deviceId, disconnectedDeviceId => {
+        disconnectedFrom = disconnectedDeviceId;
+        receivedDisconnectedEvent = true;
+      });
+      const battery = await BleClient.read(
+        device2!.deviceId,
+        BATTERY_SERVICE,
+        BATTERY_CHARACTERISTIC,
+      );
+      assert(battery.getUint8(0) > 10 && battery.getUint8(0) <= 100);
+      assert(receivedDisconnectedEvent === false);
+      assert(disconnectedFrom === "");
+      await showAlert("Disconnect Humigadget");
+      await sleep(3000);
+      assert((receivedDisconnectedEvent as boolean) === true);
+      assert(disconnectedFrom === device2!.deviceId);
     });
   });
 }

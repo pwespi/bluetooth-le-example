@@ -107,6 +107,9 @@ export async function testBleScan(): Promise<void> {
         },
       );
       await sleep(5000);
+      if (results.length === 0) {
+        await sleep(3000);
+      }
       await BleClient.stopLEScan();
       assert(results.length === 1);
       assert(results[0].device.name === "zyx");
