@@ -1,4 +1,5 @@
 import { Config } from "@stencil/core";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
 
 // https://stenciljs.com/docs/config
 
@@ -12,4 +13,10 @@ export const config: Config = {
       serviceWorker: null,
     },
   ],
+  rollupPlugins: {
+    before: [
+      // required by uvu
+      nodeResolve(),
+    ],
+  },
 };
