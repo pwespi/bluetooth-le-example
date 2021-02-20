@@ -1,63 +1,86 @@
-import {
-  assert,
-  assertEqual,
-  assertEqualArray,
-  describe,
-  expectError,
-  it,
-  sleep,
-} from "./testRunner";
+import * as assert from "uvu/assert";
+
+import { sleep } from "../helpers/sleep";
+
+import { assertThrows } from "./assertThrows";
+import { describe, it } from "./testRunner";
 
 export async function testRunner(): Promise<void> {
   await describe("Custom test runner", async () => {
-    await it("should show error on false", async () => {
-      assert(false);
+    await it("ERROR: should show error on false", async () => {
+      assert.ok(false);
     });
 
     await it("should not show error on true", () => {
-      assert(true);
+      assert.ok(true);
     });
 
     await it("should wait for async code", async () => {
       await sleep(500);
-      assert(true);
+      assert.ok(true);
     });
 
-    await it("should wait for async code then detect false", async () => {
+    await it("ERROR: should wait for async code then detect false", async () => {
       await sleep(500);
-      assert(false);
+      assert.ok(false);
     });
 
-    await it("should catch errors", async () => {
+    await it("should assert throws", async () => {
       const test = async () => {
         throw new Error("some message");
       };
-      await expectError(test);
-      await expectError(test, "some message");
-      await expectError(test, "some other message");
+      await assertThrows(test);
+    });
 
+    await it("should assert throws with message", async () => {
+      const test = async () => {
+        throw new Error("some message");
+      };
+      await assertThrows(test, "some message");
+    });
+
+    await it("ERROR: assert throws with wrong message", async () => {
+      const test = async () => {
+        throw new Error("some message");
+      };
+      await assertThrows(test, "some other message");
+    });
+
+    await it("ERROR: should show error if no error was thrown", async () => {
       const test2 = () => {
         // I don't throw
       };
-      await expectError(test2);
+      await assertThrows(test2);
     });
 
-    await it("should show uncaught errors", async () => {
+    await it("ERROR: should show uncaught errors", async () => {
       const test = async () => {
         throw new Error("some message");
       };
       await test();
-      assert(true);
+      assert.ok(true);
     });
 
-    await it("should use assertEqual", async () => {
-      assertEqual(1, 1);
-      assertEqual(1, 2);
+    await it("assert.equal", async () => {
+      assert.equal(1, 1);
+    });
+
+    await it("ERROR: assert.equal", async () => {
+      assert.equal(1, 2);
     });
 
     await it("should compare arrays", async () => {
-      assertEqualArray([1, 0], [1, 0]);
-      assertEqualArray([1, 0], [1, 2]);
+      assert.equal([1, 0], [1, 0]);
+    });
+
+    await it("ERROR: should compare arrays", async () => {
+      assert.equal([1, 0], [1, 2]);
+    });
+  });
+
+  await describe("Test suite that passes", async () => {
+    it("should pass this test", async () => {
+      assert.ok(true);
     });
   });
 }

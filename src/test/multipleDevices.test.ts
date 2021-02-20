@@ -6,6 +6,7 @@ import {
   ScanMode,
 } from "@capacitor-community/bluetooth-le";
 import { Capacitor } from "@capacitor/core";
+import * as assert from "uvu/assert";
 
 import {
   BATTERY_CHARACTERISTIC,
@@ -21,8 +22,10 @@ import {
   TEMPERATURE_CHARACTERISTIC,
   TEMPERATURE_SERVICE,
 } from "../helpers/ble";
+import { showAlert } from "../helpers/showAlert";
+import { sleep } from "../helpers/sleep";
 
-import { assert, describe, it, showAlert, sleep } from "./testRunner";
+import { describe, it } from "./testRunner";
 
 export async function testMultipleDevices(): Promise<void> {
   await describe("Multiple Devices", async () => {
@@ -31,7 +34,7 @@ export async function testMultipleDevices(): Promise<void> {
 
     await it("should initialize", async () => {
       await BleClient.initialize();
-      assert(BleClient !== undefined);
+      assert.is.not(BleClient, undefined);
     });
 
     await it("should request two devices", async () => {
@@ -44,9 +47,9 @@ export async function testMultipleDevices(): Promise<void> {
         optionalServices: [BATTERY_SERVICE],
       });
 
-      assert(device1 !== null);
-      assert(device1.name!.includes("Polar"));
-      assert(device1.deviceId.length > 0);
+      assert.is.not(device1, null);
+      assert.ok(device1.name!.includes("Polar"));
+      assert.ok(device1.deviceId.length > 0);
 
       if (Capacitor.getPlatform() === "web") {
         // web requires user interaction for requestDevice
@@ -64,15 +67,15 @@ export async function testMultipleDevices(): Promise<void> {
         scanMode: ScanMode.SCAN_MODE_LOW_LATENCY,
       });
 
-      assert(device2 !== null);
-      assert(device2.name!.includes("Smart"));
-      assert(device2.deviceId.length > 0);
+      assert.is.not(device2, null);
+      assert.ok(device2.name!.includes("Smart"));
+      assert.ok(device2.deviceId.length > 0);
     });
 
     await it("should connect", async () => {
       await BleClient.connect(device1!.deviceId);
       await BleClient.connect(device2!.deviceId);
-      assert(true);
+      assert.ok(true);
     });
 
     await it("should read body sensor location and read battery level", async () => {
@@ -87,8 +90,8 @@ export async function testMultipleDevices(): Promise<void> {
         BATTERY_CHARACTERISTIC,
       );
 
-      assert(result1.getUint8(0) === 1);
-      assert(result2.getUint8(0) > 10 && result2.getUint8(0) <= 100);
+      assert.is(result1.getUint8(0), 1);
+      assert.ok(result2.getUint8(0) > 10 && result2.getUint8(0) <= 100);
     });
 
     await it("should write to control point", async () => {
@@ -98,7 +101,7 @@ export async function testMultipleDevices(): Promise<void> {
         POLAR_PMD_CONTROL_POINT,
         numbersToDataView([1, 0]),
       );
-      assert(true);
+      assert.ok(true);
     });
 
     await it("should handle notifications", async () => {
@@ -112,7 +115,7 @@ export async function testMultipleDevices(): Promise<void> {
           const hr = value.getUint8(1);
           hrCount += 1;
           console.log("hr", hr);
-          assert(hr > 50 && hr < 100);
+          assert.ok(hr > 50 && hr < 100);
         },
       );
       await BleClient.startNotifications(
@@ -123,7 +126,7 @@ export async function testMultipleDevices(): Promise<void> {
           const t = value.getFloat32(0, true);
           tCount += 1;
           console.log("temp", t);
-          assert(t > 19 && t < 28);
+          assert.ok(t > 19 && t < 28);
         },
       );
 
@@ -141,14 +144,14 @@ export async function testMultipleDevices(): Promise<void> {
       );
       console.log("hrCount", hrCount);
       console.log("tCount", tCount);
-      assert(hrCount > 6 && hrCount <= 8);
-      assert(tCount > 6 && tCount <= 8);
+      assert.ok(hrCount > 6 && hrCount <= 8);
+      assert.ok(tCount > 6 && tCount <= 8);
     });
 
     await it("should disconnect", async () => {
       await BleClient.disconnect(device1!.deviceId);
       await BleClient.disconnect(device2!.deviceId);
-      assert(true);
+      assert.ok(true);
     });
 
     await it("should receive disconnected event when device is turned off", async () => {
@@ -165,13 +168,13 @@ export async function testMultipleDevices(): Promise<void> {
         BATTERY_SERVICE,
         BATTERY_CHARACTERISTIC,
       );
-      assert(battery.getUint8(0) > 10 && battery.getUint8(0) <= 100);
-      assert(receivedDisconnectedEvent === false);
-      assert(disconnectedFrom === "");
+      assert.ok(battery.getUint8(0) > 10 && battery.getUint8(0) <= 100);
+      assert.is(receivedDisconnectedEvent, false);
+      assert.is(disconnectedFrom, "");
       await showAlert("Disconnect Humigadget");
       await sleep(3000);
-      assert((receivedDisconnectedEvent as boolean) === true);
-      assert(disconnectedFrom === device2!.deviceId);
+      assert.ok(receivedDisconnectedEvent);
+      assert.is(disconnectedFrom, device2!.deviceId);
     });
   });
 }

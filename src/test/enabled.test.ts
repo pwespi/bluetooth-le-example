@@ -1,7 +1,10 @@
 import { BleClient } from "@capacitor-community/bluetooth-le";
 import { Capacitor } from "@capacitor/core";
+import * as assert from "uvu/assert";
 
-import { assert, describe, it, showAlert } from "./testRunner";
+import { showAlert } from "../helpers/showAlert";
+
+import { describe, it } from "./testRunner";
 
 export async function testEnabled(): Promise<void> {
   if (Capacitor.getPlatform() !== "web") {
@@ -11,7 +14,7 @@ export async function testEnabled(): Promise<void> {
 
       await it("should return true when enabled", async () => {
         state = await BleClient.getEnabled();
-        assert(state === true);
+        assert.is(state, true);
       });
 
       await it("should listen when state changes to false", async () => {
@@ -19,55 +22,55 @@ export async function testEnabled(): Promise<void> {
           console.log("state", state);
           state = value;
         });
-        assert(state === true);
+        assert.is(state, true);
 
         await showAlert("Turn off Bluetooth");
-        assert(state === false);
+        assert.is(state, false);
       });
 
       await it("should return false when disabled", async () => {
         state = await BleClient.getEnabled();
-        assert(state === false);
+        assert.is(state, false);
       });
 
       await it("should listen when state changes to true", async () => {
-        assert(state === false);
+        assert.is(state, false);
         await showAlert("Turn on Bluetooth");
-        assert(state === true);
+        assert.is(state, true);
       });
 
       await it("should stop listening to state change", async () => {
-        assert(state === true);
+        assert.is(state, true);
         await BleClient.stopEnabledNotifications();
         await showAlert("Turn off Bluetooth");
-        assert(state === true);
+        assert.is(state, true);
         state = await BleClient.getEnabled();
-        assert(state === false);
+        assert.is(state, false);
       });
 
       await it("should turn on again", async () => {
         await showAlert("Turn on Bluetooth");
         state = await BleClient.getEnabled();
-        assert(state === true);
+        assert.is(state, true);
       });
     });
   } else {
     await describe("Bluetooth state", async () => {
       await it("should report true on web", async () => {
         const state = await BleClient.getEnabled();
-        assert(state === true);
+        assert.is(state, true);
       });
 
       await it("should not throw on startStateNotification", async () => {
-        await BleClient.startEnabledNotifications(getEnabled => {
-          console.log(getEnabled);
+        await BleClient.startEnabledNotifications(value => {
+          console.log(value);
         });
-        assert(true);
+        assert.ok(true);
       });
 
       await it("should not throw on stopStateNotification", async () => {
         await BleClient.stopEnabledNotifications();
-        assert(true);
+        assert.ok(true);
       });
     });
   }

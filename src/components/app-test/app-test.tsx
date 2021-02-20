@@ -3,13 +3,14 @@ import { Component, Host, h, State } from "@stencil/core";
 
 import { handleError } from "../../helpers/error";
 import { resultToString } from "../../helpers/helpers";
-import { testBleClient, testInit } from "../../test/bleClient.test";
+import { testBleClient } from "../../test/bleClient.test";
 import { testBleScan } from "../../test/bleScan.test";
+import { testEnabled } from "../../test/enabled.test";
 import { testFilters } from "../../test/filter.test";
+import { testInit } from "../../test/initialize.test";
 import { testMultipleDevices } from "../../test/multipleDevices.test";
 import { testRunner } from "../../test/runner.test";
-import { testEnabled } from "../../test/enabled.test";
-import { printResult, beforeAll } from "../../test/testRunner";
+import { printResult, initializeTest } from "../../test/testRunner";
 
 @Component({
   tag: "app-test",
@@ -22,7 +23,7 @@ export class AppTest {
     {
       label: "test all",
       action: async () => {
-        beforeAll();
+        initializeTest();
         await testInit();
         await testBleClient();
         await testEnabled();
@@ -36,7 +37,7 @@ export class AppTest {
     {
       label: "test init",
       action: async () => {
-        beforeAll();
+        initializeTest();
         await testInit();
         const result = printResult();
         return result;
@@ -45,7 +46,7 @@ export class AppTest {
     {
       label: "test ble client",
       action: async () => {
-        beforeAll();
+        initializeTest();
         await testBleClient();
         const result = printResult();
         return result;
@@ -54,7 +55,7 @@ export class AppTest {
     {
       label: "test enabled",
       action: async () => {
-        beforeAll();
+        initializeTest();
         await testEnabled();
         const result = printResult();
         return result;
@@ -63,7 +64,7 @@ export class AppTest {
     {
       label: "test multiple dev",
       action: async () => {
-        beforeAll();
+        initializeTest();
         await testMultipleDevices();
         const result = printResult();
         return result;
@@ -72,7 +73,7 @@ export class AppTest {
     {
       label: "test scan",
       action: async () => {
-        beforeAll();
+        initializeTest();
         await testBleScan();
         const result = printResult();
         return result;
@@ -81,7 +82,7 @@ export class AppTest {
     {
       label: "test filters",
       action: async () => {
-        beforeAll();
+        initializeTest();
         await testFilters();
         const result = printResult();
         return result;
@@ -90,7 +91,7 @@ export class AppTest {
     {
       label: "(test runner)",
       action: async () => {
-        beforeAll();
+        initializeTest();
         await testRunner();
         const result = printResult();
         return result;

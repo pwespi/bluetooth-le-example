@@ -8,8 +8,12 @@ import {
   ScanMode,
 } from "@capacitor-community/bluetooth-le";
 import { Capacitor } from "@capacitor/core";
+import * as assert from "uvu/assert";
 
-import { assert, describe, it, showAlert, sleep } from "./testRunner";
+import { showAlert } from "../helpers/showAlert";
+import { sleep } from "../helpers/sleep";
+
+import { describe, it } from "./testRunner";
 
 export async function testFilters(): Promise<void> {
   await describe("Scan filters", async () => {
@@ -123,7 +127,8 @@ async function scan(
     try {
       await BleClient.requestDevice(options);
     } catch (error) {
-      assert(true);
+      // manually check whether the number is correct
+      assert.ok(true);
     }
   } else {
     const results: ScanResult[] = [];
@@ -137,9 +142,9 @@ async function scan(
     await BleClient.stopLEScan();
     await sleep(500);
     if (expectedNumberOfResults >= 5) {
-      assert(results.length >= expectedNumberOfResults);
+      assert.ok(results.length >= expectedNumberOfResults);
     } else {
-      assert(results.length === expectedNumberOfResults);
+      assert.is(results.length, expectedNumberOfResults);
       if (results.length !== expectedNumberOfResults) {
         console.error(
           "expected",
