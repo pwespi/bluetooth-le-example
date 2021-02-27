@@ -1,6 +1,7 @@
 import {
   BleClient,
   numbersToDataView,
+  numberToUUID,
 } from "@capacitor-community/bluetooth-le";
 import { loadingController } from "@ionic/core";
 import { Component, h, Host, State } from "@stencil/core";
@@ -26,6 +27,8 @@ export class AppHome {
   @State() notification1 = "";
   @State() notification2 = "";
   @State() heartRate: [string, number][] = [];
+
+  counter = 0;
 
   private deviceId = "";
 
@@ -243,6 +246,59 @@ export class AppHome {
           this.deviceId,
           POLAR_PMD_SERVICE,
           POLAR_PMD_DATA,
+        );
+      },
+    },
+    {
+      label: "request device (zyx)",
+      action: async () => {
+        const result = await BleClient.requestDevice({
+          namePrefix: "zyx",
+          optionalServices: [numberToUUID(0x1111)],
+        });
+        this.deviceId = result.deviceId;
+        return result;
+      },
+    },
+    {
+      label: "connect",
+      action: async () => {
+        return BleClient.connect(this.deviceId, () =>
+          console.log("disconnected event"),
+        );
+      },
+    },
+    {
+      label: "read",
+      action: () => {
+        return BleClient.read(
+          this.deviceId,
+          numberToUUID(0x1111),
+          numberToUUID(0x1112),
+        );
+      },
+    },
+    {
+      label: "write",
+      action: () => {
+        this.counter++;
+        return BleClient.write(
+          this.deviceId,
+          numberToUUID(0x1111),
+          numberToUUID(0x1112),
+          numbersToDataView([this.counter]),
+        );
+      },
+    },
+    {
+      label: "write without response",
+      action: () => {
+        this.counter++;
+        return BleClient.writeWithoutResponse(
+          this.deviceId,
+          numberToUUID(0x1111),
+          numberToUUID(0x1112),
+          numbersToDataView([this.counter]),
         );
       },
     },

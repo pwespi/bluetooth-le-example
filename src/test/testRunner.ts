@@ -77,7 +77,7 @@ export async function it(
     state.currentSuite.tests.passed += 1;
   } catch (error) {
     console.error(
-      `    × ${state.currentTest.name} - test failed.`,
+      `    × ${state.currentTest.name} - ${state.currentSuite.name} - test failed.`,
       error?.message,
     );
   }

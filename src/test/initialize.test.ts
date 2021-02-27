@@ -6,7 +6,7 @@ import { assertThrows } from "./assertThrows";
 import { describe, it } from "./testRunner";
 
 export async function testInit(): Promise<void> {
-  await describe("BleClient", async () => {
+  await describe("BleClient initialize", async () => {
     await it("should throw an error if not initialized on android or ios", async () => {
       if (Capacitor.getPlatform() !== "web") {
         const test = async () => {

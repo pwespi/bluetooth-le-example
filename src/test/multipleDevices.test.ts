@@ -43,6 +43,7 @@ export async function testMultipleDevices(): Promise<void> {
         await showAlert("requestDevice");
       }
       device1 = await BleClient.requestDevice({
+        namePrefix: 'Polar',
         services: [HEART_RATE_SERVICE],
         optionalServices: [BATTERY_SERVICE],
       });

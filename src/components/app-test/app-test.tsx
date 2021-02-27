@@ -11,6 +11,7 @@ import { testInit } from "../../test/initialize.test";
 import { testMultipleDevices } from "../../test/multipleDevices.test";
 import { testRunner } from "../../test/runner.test";
 import { printResult, initializeTest } from "../../test/testRunner";
+import { testWrite } from "../../test/write.test";
 
 @Component({
   tag: "app-test",
@@ -27,6 +28,7 @@ export class AppTest {
         await testInit();
         await testBleClient();
         await testEnabled();
+        await testWrite();
         await testMultipleDevices();
         await testBleScan();
         await testFilters();
@@ -57,6 +59,15 @@ export class AppTest {
       action: async () => {
         initializeTest();
         await testEnabled();
+        const result = printResult();
+        return result;
+      },
+    },
+    {
+      label: "test write",
+      action: async () => {
+        initializeTest();
+        await testWrite();
         const result = printResult();
         return result;
       },

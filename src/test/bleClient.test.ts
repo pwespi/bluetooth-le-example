@@ -39,6 +39,7 @@ export async function testBleClient(): Promise<void> {
         await showAlert("requestDevice");
       }
       device = await BleClient.requestDevice({
+        namePrefix: 'Polar',
         services: [HEART_RATE_SERVICE],
         optionalServices: [BATTERY_SERVICE, POLAR_PMD_SERVICE],
       });
