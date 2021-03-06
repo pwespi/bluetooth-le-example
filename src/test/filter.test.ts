@@ -144,7 +144,6 @@ async function scan(
     if (expectedNumberOfResults >= 5) {
       assert.ok(results.length >= expectedNumberOfResults);
     } else {
-      assert.is(results.length, expectedNumberOfResults);
       if (results.length !== expectedNumberOfResults) {
         console.error(
           "expected",
@@ -152,8 +151,8 @@ async function scan(
           "received",
           results.length,
         );
-        console.log("results", results);
       }
+      assert.is(results.length, expectedNumberOfResults);
     }
   }
 }
