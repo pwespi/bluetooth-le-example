@@ -1,5 +1,6 @@
 import {
   BleClient,
+  dataViewToText,
   numbersToDataView,
   numberToUUID,
 } from "@capacitor-community/bluetooth-le";
@@ -14,6 +15,8 @@ import {
   HEART_RATE_MEASUREMENT_CHARACTERISTIC,
   POLAR_PMD_CONTROL_POINT,
   POLAR_PMD_DATA,
+  GENERIC_SERVICE,
+  DEVICE_NAME_CHARACTERISTIC,
 } from "../../helpers/ble";
 import { handleError } from "../../helpers/error";
 import { resultToString, Target } from "../../helpers/helpers";
@@ -250,20 +253,21 @@ export class AppHome {
       },
     },
     {
-      label: "request device (zyx)",
+      label: "request device (HR zyx)",
       action: async () => {
-        const result = await BleClient.requestDevice({
-          namePrefix: "zyx",
-          optionalServices: [numberToUUID(0x1111)],
+        const device = await BleClient.requestDevice({
+          services: [numberToUUID(0x180d)],
+          optionalServices: [numberToUUID(0x1111), GENERIC_SERVICE],
         });
-        this.deviceId = result.deviceId;
-        return result;
+        console.log("device name", device.name);
+        this.deviceId = device.deviceId;
+        return device;
       },
     },
     {
       label: "connect",
       action: async () => {
-        return BleClient.connect(this.deviceId, () =>
+        await BleClient.connect(this.deviceId, () =>
           console.log("disconnected event"),
         );
       },
@@ -300,6 +304,17 @@ export class AppHome {
           numberToUUID(0x1112),
           numbersToDataView([this.counter]),
         );
+      },
+    },
+    {
+      label: "read device name",
+      action: async () => {
+        const result = await BleClient.read(
+          this.deviceId,
+          GENERIC_SERVICE,
+          DEVICE_NAME_CHARACTERISTIC,
+        );
+        return dataViewToText(result);
       },
     },
     {
