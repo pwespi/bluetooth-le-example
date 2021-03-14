@@ -17,6 +17,8 @@ import {
   POLAR_PMD_DATA,
   GENERIC_SERVICE,
   DEVICE_NAME_CHARACTERISTIC,
+  BATTERY_SERVICE,
+  BATTERY_CHARACTERISTIC,
 } from "../../helpers/ble";
 import { handleError } from "../../helpers/error";
 import { resultToString, Target } from "../../helpers/helpers";
@@ -82,7 +84,7 @@ export class AppHome {
       action: async () => {
         const result = await BleClient.requestDevice({
           services: [HEART_RATE_SERVICE],
-          optionalServices: [POLAR_PMD_SERVICE],
+          optionalServices: [POLAR_PMD_SERVICE, BATTERY_SERVICE],
         });
         this.deviceId = result.deviceId;
         return result;
@@ -122,6 +124,24 @@ export class AppHome {
           HEART_RATE_SERVICE,
           BODY_SENSOR_LOCATION_CHARACTERISTIC,
         );
+      },
+    },
+    {
+      label: "double read",
+      action: async () => {
+        const result1 = BleClient.read(
+          this.deviceId,
+          HEART_RATE_SERVICE,
+          BODY_SENSOR_LOCATION_CHARACTERISTIC,
+        );
+        const result2 = BleClient.read(
+          this.deviceId,
+          BATTERY_SERVICE,
+          BATTERY_CHARACTERISTIC,
+        );
+        console.log("result1", result1)
+        console.log("result2", result2)
+        return await result1
       },
     },
     {
@@ -179,6 +199,28 @@ export class AppHome {
       },
     },
     {
+      label: "start double notifications control/hr",
+      action: async () => {
+        BleClient.startNotifications(
+          this.deviceId,
+          POLAR_PMD_SERVICE,
+          POLAR_PMD_CONTROL_POINT,
+          value => this.showResult(value, Target.NOTIFICATION_2),
+        );
+        BleClient.startNotifications(
+          this.deviceId,
+          HEART_RATE_SERVICE,
+          HEART_RATE_MEASUREMENT_CHARACTERISTIC,
+          value => {
+            const timestamp = new Date().toLocaleTimeString();
+            this.heartRate.push([timestamp, this.parseHeartRate(value)]);
+            console.log(timestamp);
+            this.showResult(value, Target.NOTIFICATION_1);
+          },
+        );
+      },
+    },
+    {
       label: "stop notifications control",
       action: () => {
         return BleClient.stopNotifications(
@@ -192,6 +234,23 @@ export class AppHome {
       label: "write control (get ecg settings)",
       action: () => {
         return BleClient.write(
+          this.deviceId,
+          POLAR_PMD_SERVICE,
+          POLAR_PMD_CONTROL_POINT,
+          numbersToDataView([1, 0]),
+        );
+      },
+    },
+    {
+      label: "double write control (get ecg settings)",
+      action: async () => {
+        BleClient.write(
+          this.deviceId,
+          POLAR_PMD_SERVICE,
+          POLAR_PMD_CONTROL_POINT,
+          numbersToDataView([1, 0]),
+        );
+        BleClient.write(
           this.deviceId,
           POLAR_PMD_SERVICE,
           POLAR_PMD_CONTROL_POINT,
