@@ -138,7 +138,7 @@ export async function testBleClient(): Promise<void> {
         HEART_RATE_SERVICE,
         HEART_RATE_MEASUREMENT_CHARACTERISTIC,
       );
-      assert.ok(count >= 5 && count < 8);
+      assert.ok(count >= 5 && count < 8, `count should be between 5 and 8, count is ${count}`);
     });
 
     await it("should read ECG", async () => {
