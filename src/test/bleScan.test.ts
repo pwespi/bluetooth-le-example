@@ -24,6 +24,7 @@ export async function testBleScan(): Promise<void> {
       await BleClient.requestLEScan(
         {
           services: [HEART_RATE_SERVICE],
+          namePrefix: "zyx",
         },
         result => {
           if (result !== undefined) {
@@ -38,6 +39,8 @@ export async function testBleScan(): Promise<void> {
       const scanResult = results.find(r => r.device?.name === "zyx");
       assert.ok(scanResult);
       assert.ok(scanResult!.device.deviceId.length > 0);
+      assert.is(scanResult!.device.name, "zyx");
+      assert.is(scanResult!.localName, "zyx");
       assert.ok(scanResult!.rssi > -100 && scanResult!.rssi < -10);
       assert.ok(scanResult!.txPower >= -127 && scanResult!.txPower <= 127);
       const manufacturerData = scanResult!.manufacturerData!["1281"];
