@@ -165,7 +165,7 @@ export async function testBleClient(): Promise<void> {
         numbersToDataView([1, 0]),
       );
       await sleep(300);
-      assert.is.not(control, null);
+      assert.is.not(control, null, "control is not null");
       assert.equal(dataViewToNumbers(control!), [
         240,
         1,
@@ -180,7 +180,7 @@ export async function testBleClient(): Promise<void> {
         1,
         14,
         0,
-      ]);
+      ], "control value is [240,1,0,0,0,0,1,130,0,1,1,14,0,]");
 
       // listen to data
       await BleClient.startNotifications(
@@ -192,7 +192,7 @@ export async function testBleClient(): Promise<void> {
 
       // should not receive data before start command
       await sleep(1500);
-      assert.is(ecg.length, 0);
+      assert.is(ecg.length, 0, "ecg length is still 0");
 
       // start stream
       await BleClient.write(
@@ -202,17 +202,17 @@ export async function testBleClient(): Promise<void> {
         numbersToDataView([2, 0, 0, 1, 130, 0, 1, 1, 14, 0]),
       );
       await sleep(300);
-      assert.equal(dataViewToNumbers(control!), [240, 2, 0, 0, 0, 0]);
+      assert.equal(dataViewToNumbers(control!), [240, 2, 0, 0, 0, 0], "control value is [240, 2, 0, 0, 0, 0]");
 
       await sleep(10000);
-      if (Capacitor.getPlatform() === "web") {
-        await sleep(30000);
-      }
-      const length = ecg.length;
-      assert.ok(length >= 5);
+      // if (Capacitor.getPlatform() === "web") {
+      //   await sleep(30000);
+      // }
+      let length = ecg.length;
       console.log("length", ecg.length);
-      assert.ok(ecg[length - 1].byteLength > 100);
+      assert.ok(length >= 5, "length is larger than or equal 5");
       console.log("bytelength", ecg[length - 1].byteLength);
+      assert.ok(ecg[length - 1].byteLength >= 100, "byte length is larger than or equal 100");
 
       // stop stream
       await BleClient.write(
@@ -221,12 +221,13 @@ export async function testBleClient(): Promise<void> {
         POLAR_PMD_CONTROL_POINT,
         numbersToDataView([3, 0]),
       );
+      length = ecg.length
       await sleep(300);
-      assert.equal(dataViewToNumbers(control!), [240, 3, 0, 0, 0]);
+      assert.equal(dataViewToNumbers(control!), [240, 3, 0, 0, 0], "control value is [240, 3, 0, 0, 0]");
 
       // should not receive any further values
       await sleep(3000);
-      assert.is(ecg.length, length);
+      assert.is(ecg.length, length, `ecg length has not changed ${ecg.length} vs ${length}`);
 
       await BleClient.stopNotifications(
         deviceId,

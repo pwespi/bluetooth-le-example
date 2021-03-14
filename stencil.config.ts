@@ -1,4 +1,5 @@
 import { Config } from "@stencil/core";
+import { readFileSync } from "fs";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 
 // https://stenciljs.com/docs/config
@@ -18,5 +19,11 @@ export const config: Config = {
       // required by uvu
       nodeResolve(),
     ],
+  },
+  devServer: {
+    // https: {
+    //   cert: readFileSync("dev.crt", "utf8"),
+    //   key: readFileSync("dev.key", "utf8"),
+    // },
   },
 };

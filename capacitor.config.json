@@ -19,6 +19,7 @@
   },
   "cordova": {},
   "server": {
-    "url": "http://192.168.178.43:3333"
+    "url": "http://192.168.178.24:3333",
+    "cleartext": true
   }
 }
