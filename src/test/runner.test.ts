@@ -32,9 +32,23 @@ export async function testRunner(): Promise<void> {
       await assertThrows(test);
     });
 
+    await it("should assert throws on promise rejection", async () => {
+      const test = async () => {
+        return Promise.reject("some message");
+      };
+      await assertThrows(test);
+    });
+
     await it("should assert throws with message", async () => {
       const test = async () => {
-        throw new Error("some message");
+        throw new Error("some Message");
+      };
+      await assertThrows(test, "some message");
+    });
+
+    await it("should assert throws on promise rejection with message", async () => {
+      const test = async () => {
+        return Promise.reject("some Message");
       };
       await assertThrows(test, "some message");
     });
