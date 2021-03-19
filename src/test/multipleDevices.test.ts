@@ -149,6 +149,83 @@ export async function testMultipleDevices(): Promise<void> {
       assert.ok(tCount > 6 && tCount <= 8);
     });
 
+    await it("should queue read operations", async () => {
+      const result1 = BleClient.read(
+        device1!.deviceId,
+        HEART_RATE_SERVICE,
+        BODY_SENSOR_LOCATION_CHARACTERISTIC,
+      );
+      const result2 = BleClient.read(
+        device2!.deviceId,
+        BATTERY_SERVICE,
+        BATTERY_CHARACTERISTIC,
+      );
+
+      assert.is((await result1).getUint8(0), 1);
+      assert.ok((await result2).getUint8(0) > 10 && (await result2).getUint8(0) <= 100);
+    });
+
+    await it("should queue write operations", async () => {
+      const result1 = BleClient.write(
+        device1!.deviceId,
+        POLAR_PMD_SERVICE,
+        POLAR_PMD_CONTROL_POINT,
+        numbersToDataView([1, 0]),
+      );
+      const result2 = BleClient.write(
+        device1!.deviceId,
+        POLAR_PMD_SERVICE,
+        POLAR_PMD_CONTROL_POINT,
+        numbersToDataView([3, 0]),
+      );
+      await Promise.all([result1, result2])
+      assert.ok(true);
+    });
+
+    await it("should queue notifications operations", async () => {
+      let hrCount = 0;
+      let tCount = 0;
+      BleClient.startNotifications(
+        device1!.deviceId,
+        HEART_RATE_SERVICE,
+        HEART_RATE_MEASUREMENT_CHARACTERISTIC,
+        value => {
+          const hr = value.getUint8(1);
+          hrCount += 1;
+          console.log("hr", hr);
+          assert.ok(hr > 50 && hr < 100);
+        },
+      );
+      BleClient.startNotifications(
+        device2!.deviceId,
+        TEMPERATURE_SERVICE,
+        TEMPERATURE_CHARACTERISTIC,
+        value => {
+          const t = value.getFloat32(0, true);
+          tCount += 1;
+          console.log("temp", t);
+          assert.ok(t > 19 && t < 28);
+        },
+      );
+
+      await sleep(7000);
+      console.log("stop");
+      BleClient.stopNotifications(
+        device1!.deviceId,
+        HEART_RATE_SERVICE,
+        HEART_RATE_MEASUREMENT_CHARACTERISTIC,
+      );
+      BleClient.stopNotifications(
+        device2!.deviceId,
+        TEMPERATURE_SERVICE,
+        TEMPERATURE_CHARACTERISTIC,
+      );
+      console.log("hrCount", hrCount);
+      console.log("tCount", tCount);
+      assert.ok(hrCount >= 6 && hrCount <= 8);
+      assert.ok(tCount >= 6 && tCount <= 8);
+    });
+
     await it("should disconnect", async () => {
       await BleClient.disconnect(device1!.deviceId);
       await BleClient.disconnect(device2!.deviceId);
