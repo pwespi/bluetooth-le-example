@@ -8,7 +8,15 @@ export async function assertThrows(
     await test();
   } catch (error) {
     if (errorMessage !== undefined) {
-      assert.ok((error.message as string).includes(errorMessage));
+      assert.ok(
+        (error.message as string)
+          ?.toLowerCase()
+          ?.includes?.(errorMessage.toLowerCase()) || // throw new Error()
+          (error as string)
+            ?.toLowerCase()
+            ?.includes?.(errorMessage.toLowerCase()), // Promise.reject
+        `message '${errorMessage}' not found in error`,
+      );
     } else {
       assert.ok(true);
     }
