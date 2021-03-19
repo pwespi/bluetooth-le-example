@@ -139,9 +139,9 @@ export class AppHome {
           BATTERY_SERVICE,
           BATTERY_CHARACTERISTIC,
         );
-        console.log("result1", result1)
-        console.log("result2", result2)
-        return await result1
+        console.log("result1", result1);
+        console.log("result2", result2);
+        return await result1;
       },
     },
     {
@@ -254,7 +254,7 @@ export class AppHome {
           this.deviceId,
           POLAR_PMD_SERVICE,
           POLAR_PMD_CONTROL_POINT,
-          numbersToDataView([1, 0]),
+          numbersToDataView([3, 0]),
         );
       },
     },
@@ -348,6 +348,18 @@ export class AppHome {
         return BleClient.write(
           this.deviceId,
           numberToUUID(0x1111),
+          numberToUUID(0x1113),
+          numbersToDataView([this.counter]),
+        );
+      },
+    },
+    {
+      label: "write (fail)",
+      action: () => {
+        this.counter++;
+        return BleClient.write(
+          this.deviceId,
+          numberToUUID(0x1111),
           numberToUUID(0x1112),
           numbersToDataView([this.counter]),
         );
@@ -366,6 +378,18 @@ export class AppHome {
       },
     },
     {
+      label: "enable queue",
+      action: async () => {
+        BleClient.enableQueue();
+      },
+    },
+    {
+      label: "disable queue",
+      action: async () => {
+        BleClient.disableQueue();
+      },
+    },
+    {
       label: "read device name",
       action: async () => {
         const result = await BleClient.read(
@@ -374,6 +398,55 @@ export class AppHome {
           DEVICE_NAME_CHARACTERISTIC,
         );
         return dataViewToText(result);
+      },
+    },
+    {
+      label: "read performance",
+      action: async () => {
+        console.time("read performance");
+        const characteristics = [0x1115, 0x1116, 0x1117, 0x1118, 0x1119];
+        const operations = characteristics.map(c =>
+          BleClient.read(this.deviceId, numberToUUID(0x1111), numberToUUID(c)),
+        );
+        const result = await Promise.all(operations);
+        console.timeEnd("read performance");
+        return result;
+      },
+    },
+    {
+      label: "write performance",
+      action: async () => {
+        console.time("write performance");
+        const characteristics = [0x1115, 0x1116, 0x1117, 0x1118, 0x1119];
+        const operations = characteristics.map(c =>
+          BleClient.write(
+            this.deviceId,
+            numberToUUID(0x1111),
+            numberToUUID(c),
+            numbersToDataView([this.counter]),
+          ),
+        );
+        const result = await Promise.all(operations);
+        console.timeEnd("write performance");
+        return result;
+      },
+    },
+    {
+      label: "write no response performance",
+      action: async () => {
+        console.time("write no response performance");
+        const characteristics = [0x1115, 0x1116, 0x1117, 0x1118, 0x1119];
+        const operations = characteristics.map(c =>
+          BleClient.writeWithoutResponse(
+            this.deviceId,
+            numberToUUID(0x1111),
+            numberToUUID(c),
+            numbersToDataView([this.counter]),
+          ),
+        );
+        const result = await Promise.all(operations);
+        console.timeEnd("write no response performance");
+        return result;
       },
     },
     {
