@@ -10,11 +10,11 @@ export async function assertThrows(
     if (errorMessage !== undefined) {
       assert.ok(
         (error.message as string)
-          ?.toLowerCase()
-          ?.includes?.(errorMessage.toLowerCase()) || // throw new Error()
+          ?.toLowerCase?.()
+          .includes?.(errorMessage.toLowerCase()) || // throw new Error()
           (error as string)
-            ?.toLowerCase()
-            ?.includes?.(errorMessage.toLowerCase()), // Promise.reject
+            ?.toLowerCase?.()
+            .includes?.(errorMessage.toLowerCase()), // Promise.reject
         `message '${errorMessage}' not found in error`,
       );
     } else {

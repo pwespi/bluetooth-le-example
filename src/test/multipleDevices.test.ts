@@ -43,7 +43,7 @@ export async function testMultipleDevices(): Promise<void> {
         await showAlert("requestDevice");
       }
       device1 = await BleClient.requestDevice({
-        namePrefix: 'Polar',
+        namePrefix: "Polar",
         services: [HEART_RATE_SERVICE],
         optionalServices: [BATTERY_SERVICE],
       });
@@ -162,7 +162,9 @@ export async function testMultipleDevices(): Promise<void> {
       );
 
       assert.is((await result1).getUint8(0), 1);
-      assert.ok((await result2).getUint8(0) > 10 && (await result2).getUint8(0) <= 100);
+      assert.ok(
+        (await result2).getUint8(0) > 10 && (await result2).getUint8(0) <= 100,
+      );
     });
 
     await it("should queue write operations", async () => {
@@ -178,7 +180,7 @@ export async function testMultipleDevices(): Promise<void> {
         POLAR_PMD_CONTROL_POINT,
         numbersToDataView([3, 0]),
       );
-      await Promise.all([result1, result2])
+      await Promise.all([result1, result2]);
       assert.ok(true);
     });
 
@@ -230,29 +232,6 @@ export async function testMultipleDevices(): Promise<void> {
       await BleClient.disconnect(device1!.deviceId);
       await BleClient.disconnect(device2!.deviceId);
       assert.ok(true);
-    });
-
-    await it("should receive disconnected event when device is turned off", async () => {
-      // wait after disconnect above
-      await sleep(5000);
-      let receivedDisconnectedEvent = false;
-      let disconnectedFrom = "";
-      await BleClient.connect(device2!.deviceId, disconnectedDeviceId => {
-        disconnectedFrom = disconnectedDeviceId;
-        receivedDisconnectedEvent = true;
-      });
-      const battery = await BleClient.read(
-        device2!.deviceId,
-        BATTERY_SERVICE,
-        BATTERY_CHARACTERISTIC,
-      );
-      assert.ok(battery.getUint8(0) > 10 && battery.getUint8(0) <= 100);
-      assert.is(receivedDisconnectedEvent, false);
-      assert.is(disconnectedFrom, "");
-      await showAlert("Disconnect Humigadget");
-      await sleep(3000);
-      assert.ok(receivedDisconnectedEvent);
-      assert.is(disconnectedFrom, device2!.deviceId);
     });
   });
 }
