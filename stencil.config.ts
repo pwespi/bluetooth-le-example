@@ -21,6 +21,7 @@ export const config: Config = {
     ],
   },
   devServer: {
+    openBrowser: false,
     // https: {
     //   cert: readFileSync("dev.crt", "utf8"),
     //   key: readFileSync("dev.key", "utf8"),
