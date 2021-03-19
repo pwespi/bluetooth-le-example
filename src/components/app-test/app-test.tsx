@@ -5,6 +5,7 @@ import { handleError } from "../../helpers/error";
 import { resultToString } from "../../helpers/helpers";
 import { testBleClient } from "../../test/bleClient.test";
 import { testBleScan } from "../../test/bleScan.test";
+import { testConnection } from "../../test/connection.test";
 import { testEnabled } from "../../test/enabled.test";
 import { testFilters } from "../../test/filter.test";
 import { testInit } from "../../test/initialize.test";
@@ -30,6 +31,7 @@ export class AppTest {
         await testEnabled();
         await testWrite();
         await testMultipleDevices();
+        await testConnection();
         await testBleScan();
         await testFilters();
         const result = printResult();
@@ -77,6 +79,15 @@ export class AppTest {
       action: async () => {
         initializeTest();
         await testMultipleDevices();
+        const result = printResult();
+        return result;
+      },
+    },
+    {
+      label: "test connection",
+      action: async () => {
+        initializeTest();
+        await testConnection();
         const result = printResult();
         return result;
       },
