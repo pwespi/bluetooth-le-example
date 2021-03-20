@@ -10,6 +10,7 @@ import { testEnabled } from "../../test/enabled.test";
 import { testFilters } from "../../test/filter.test";
 import { testInit } from "../../test/initialize.test";
 import { testMultipleDevices } from "../../test/multipleDevices.test";
+import { testNotificationCleanup } from "../../test/notificationCleanup.test";
 import { testRunner } from "../../test/runner.test";
 import { printResult, initializeTest } from "../../test/testRunner";
 import { testWrite } from "../../test/write.test";
@@ -31,6 +32,7 @@ export class AppTest {
         await testEnabled();
         await testWrite();
         await testMultipleDevices();
+        await testNotificationCleanup();
         await testConnection();
         await testBleScan();
         await testFilters();
@@ -79,6 +81,15 @@ export class AppTest {
       action: async () => {
         initializeTest();
         await testMultipleDevices();
+        const result = printResult();
+        return result;
+      },
+    },
+    {
+      label: "test notification cleanup",
+      action: async () => {
+        initializeTest();
+        await testNotificationCleanup();
         const result = printResult();
         return result;
       },

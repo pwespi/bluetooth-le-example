@@ -34,6 +34,12 @@ export class AppHumigadget {
 
   private actions: { label: string; action: () => Promise<any> }[] = [
     {
+      label: "initialize",
+      action: () => {
+        return BleClient.initialize();
+      },
+    },
+    {
       label: "request device",
       action: async () => {
         const result = await BleClient.requestDevice({
@@ -189,6 +195,28 @@ export class AppHumigadget {
           TEMPERATURE_CHARACTERISTIC,
         );
         return value.getFloat32(0, true);
+      },
+    },
+    {
+      label: "start temperature notifications",
+      action: async () => {
+        await BleClient.startNotifications(
+          this.deviceId,
+          TEMPERATURE_SERVICE,
+          TEMPERATURE_CHARACTERISTIC,
+          value =>
+            this.showResult(value.getFloat32(0, true), Target.NOTIFICATION_1),
+        );
+      },
+    },
+    {
+      label: "stop temperature notifications",
+      action: async () => {
+        await BleClient.stopNotifications(
+          this.deviceId,
+          TEMPERATURE_SERVICE,
+          TEMPERATURE_CHARACTERISTIC,
+        );
       },
     },
     {
