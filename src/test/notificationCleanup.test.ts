@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { BleDevice } from "@capacitor-community/bluetooth-le";
+import type { BleDevice } from "@capacitor-community/bluetooth-le";
 import { BleClient, ScanMode } from "@capacitor-community/bluetooth-le";
 import { Capacitor } from "@capacitor/core";
 import * as assert from "uvu/assert";
+
 import {
   TEMPERATURE_CHARACTERISTIC,
   TEMPERATURE_SERVICE,
 } from "../helpers/ble";
 import { showAlert } from "../helpers/showAlert";
 import { sleep } from "../helpers/sleep";
+
 import { describe, it } from "./testRunner";
 
 export async function testNotificationCleanup(): Promise<void> {
