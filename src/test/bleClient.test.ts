@@ -39,7 +39,7 @@ export async function testBleClient(): Promise<void> {
         await showAlert("requestDevice");
       }
       device = await BleClient.requestDevice({
-        namePrefix: 'Polar',
+        namePrefix: "Polar",
         services: [HEART_RATE_SERVICE],
         optionalServices: [BATTERY_SERVICE, POLAR_PMD_SERVICE],
       });
@@ -138,7 +138,10 @@ export async function testBleClient(): Promise<void> {
         HEART_RATE_SERVICE,
         HEART_RATE_MEASUREMENT_CHARACTERISTIC,
       );
-      assert.ok(count >= 5 && count < 8, `count should be between 5 and 8, count is ${count}`);
+      assert.ok(
+        count >= 5 && count < 8,
+        `count should be between 5 and 8, count is ${count}`,
+      );
     });
 
     await it("should read ECG", async () => {
@@ -166,21 +169,11 @@ export async function testBleClient(): Promise<void> {
       );
       await sleep(300);
       assert.is.not(control, null, "control is not null");
-      assert.equal(dataViewToNumbers(control!), [
-        240,
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        130,
-        0,
-        1,
-        1,
-        14,
-        0,
-      ], "control value is [240,1,0,0,0,0,1,130,0,1,1,14,0,]");
+      assert.equal(
+        dataViewToNumbers(control!),
+        [240, 1, 0, 0, 0, 0, 1, 130, 0, 1, 1, 14, 0],
+        "control value is [240,1,0,0,0,0,1,130,0,1,1,14,0,]",
+      );
 
       // listen to data
       await BleClient.startNotifications(
@@ -202,7 +195,11 @@ export async function testBleClient(): Promise<void> {
         numbersToDataView([2, 0, 0, 1, 130, 0, 1, 1, 14, 0]),
       );
       await sleep(300);
-      assert.equal(dataViewToNumbers(control!), [240, 2, 0, 0, 0, 0], "control value is [240, 2, 0, 0, 0, 0]");
+      assert.equal(
+        dataViewToNumbers(control!),
+        [240, 2, 0, 0, 0, 0],
+        "control value is [240, 2, 0, 0, 0, 0]",
+      );
 
       await sleep(10000);
       // if (Capacitor.getPlatform() === "web") {
@@ -212,7 +209,10 @@ export async function testBleClient(): Promise<void> {
       console.log("length", ecg.length);
       assert.ok(length >= 5, "length is larger than or equal 5");
       console.log("bytelength", ecg[length - 1].byteLength);
-      assert.ok(ecg[length - 1].byteLength >= 100, "byte length is larger than or equal 100");
+      assert.ok(
+        ecg[length - 1].byteLength >= 100,
+        "byte length is larger than or equal 100",
+      );
 
       // stop stream
       await BleClient.write(
@@ -221,13 +221,21 @@ export async function testBleClient(): Promise<void> {
         POLAR_PMD_CONTROL_POINT,
         numbersToDataView([3, 0]),
       );
-      length = ecg.length
+      length = ecg.length;
       await sleep(300);
-      assert.equal(dataViewToNumbers(control!), [240, 3, 0, 0, 0], "control value is [240, 3, 0, 0, 0]");
+      assert.equal(
+        dataViewToNumbers(control!),
+        [240, 3, 0, 0, 0],
+        "control value is [240, 3, 0, 0, 0]",
+      );
 
       // should not receive any further values
       await sleep(3000);
-      assert.is(ecg.length, length, `ecg length has not changed ${ecg.length} vs ${length}`);
+      assert.is(
+        ecg.length,
+        length,
+        `ecg length has not changed ${ecg.length} vs ${length}`,
+      );
 
       await BleClient.stopNotifications(
         deviceId,

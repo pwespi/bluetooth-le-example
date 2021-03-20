@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { BleDevice } from "@capacitor-community/bluetooth-le";
+import type { BleDevice } from "@capacitor-community/bluetooth-le";
 import { BleClient, ScanMode } from "@capacitor-community/bluetooth-le";
 import { Capacitor } from "@capacitor/core";
 import * as assert from "uvu/assert";
+
 import { BATTERY_CHARACTERISTIC, BATTERY_SERVICE } from "../helpers/ble";
 import { showAlert } from "../helpers/showAlert";
 import { sleep } from "../helpers/sleep";
+
 import { assertThrows } from "./assertThrows";
 import { describe, it } from "./testRunner";
 

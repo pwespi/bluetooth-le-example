@@ -35,11 +35,11 @@ export class AppHome {
   @State() heartRate: [string, number][] = [];
   @State() version = "";
 
-  counter = 0;
-
   async componentDidLoad(): Promise<void> {
     this.version = await getVersion();
   }
+
+  private counter = 0;
 
   private deviceId = "";
 
