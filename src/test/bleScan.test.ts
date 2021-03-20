@@ -35,7 +35,7 @@ export async function testBleScan(): Promise<void> {
       await sleep(3000);
       await BleClient.stopLEScan();
       console.log("results", results);
-      assert.ok(results.length >= 1);
+      assert.ok(results.length >= 1, "found at least one device");
       const scanResult = results.find(r => r.device?.name === "zyx");
       assert.ok(scanResult);
       assert.ok(scanResult!.device.deviceId.length > 0);
