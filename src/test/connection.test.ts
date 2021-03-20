@@ -89,13 +89,13 @@ export async function testConnection(): Promise<void> {
       console.log("receivedDisconnectedEvent", receivedDisconnectedEvent);
       assert.is(receivedDisconnectedEvent, false);
       assert.is(disconnectedFrom, "");
+      await showAlert("Turn device back on");
     });
 
     if (Capacitor.getPlatform() !== "web") {
       // cancel pending connect call, does not work yet in chromium because of a bug:
       // https://bugs.chromium.org/p/chromium/issues/detail?id=684073
       await it("should not connect after timeout", async () => {
-        await showAlert("Turn device back on");
         await sleep(11000);
         await assertThrows(async () => {
           await BleClient.read(

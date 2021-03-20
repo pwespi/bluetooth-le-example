@@ -142,17 +142,9 @@ async function scan(
     await BleClient.stopLEScan();
     await sleep(500);
     if (expectedNumberOfResults >= 5) {
-      assert.ok(results.length >= expectedNumberOfResults);
+      assert.ok(results.length >= expectedNumberOfResults, "more than 5 found");
     } else {
-      if (results.length !== expectedNumberOfResults) {
-        console.error(
-          "expected",
-          expectedNumberOfResults,
-          "received",
-          results.length,
-        );
-      }
-      assert.is(results.length, expectedNumberOfResults);
+      assert.is(results.length, expectedNumberOfResults, `expected ${expectedNumberOfResults} received ${results.length}`);
     }
   }
 }
