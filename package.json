@@ -9,9 +9,9 @@
   ],
   "scripts": {
     "generate": "stencil generate",
-    "prebuild": "npm run clean",
+    "prebuild": "npm run clean && npm run version",
     "build": "stencil build",
-    "start": "stencil build --dev --watch --serve",
+    "start": "npm run prebuild && stencil build --dev --watch --serve",
     "lint": "npm run eslint && npm run prettier -- --check",
     "fmt": "npm run eslint -- --fix && npm run prettier -- --write",
     "prettier": "prettier \"**/*{.ts,.tsx}\"",
