@@ -23,6 +23,7 @@ import {
 import { handleError } from "../../helpers/error";
 import { resultToString, Target } from "../../helpers/helpers";
 import { main } from "../../helpers/usage";
+import { getVersion } from "../../helpers/version";
 
 @Component({
   tag: "app-home",
@@ -32,8 +33,13 @@ export class AppHome {
   @State() notification1 = "";
   @State() notification2 = "";
   @State() heartRate: [string, number][] = [];
+  @State() version = "";
 
   counter = 0;
+
+  async componentDidLoad(): Promise<void> {
+    this.version = await getVersion();
+  }
 
   private deviceId = "";
 
@@ -504,6 +510,7 @@ export class AppHome {
           </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding">
+          <div class="ion-margin">@capacitor/core: {this.version}</div>
           <div class="ion-margin">Result: {this.result}</div>
           <div class="ion-margin">Notification1: {this.notification1}</div>
           <div class="ion-margin">Notification2: {this.notification2}</div>
