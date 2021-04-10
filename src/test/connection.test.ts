@@ -80,7 +80,7 @@ export async function testConnection(): Promise<void> {
     await it("should not call onDisconnected on connection timeout", async () => {
       let receivedDisconnectedEvent = false;
       let disconnectedFrom = "";
-      assertThrows(async () => {
+      await assertThrows(async () => {
         await BleClient.connect(device1!.deviceId, disconnectedDeviceId => {
           console.log("disconnected event");
           disconnectedFrom = disconnectedDeviceId;

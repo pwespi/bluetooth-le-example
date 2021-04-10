@@ -5,6 +5,7 @@ import { handleError } from "../../helpers/error";
 import { resultToString } from "../../helpers/helpers";
 import { testBleClient } from "../../test/bleClient.test";
 import { testBleScan } from "../../test/bleScan.test";
+import { testBond } from "../../test/bond.test";
 import { testConnection } from "../../test/connection.test";
 import { testEnabled } from "../../test/enabled.test";
 import { testFilters } from "../../test/filter.test";
@@ -34,6 +35,7 @@ export class AppTest {
         await testMultipleDevices();
         await testNotificationCleanup();
         await testConnection();
+        await testBond();
         await testBleScan();
         await testFilters();
         const result = printResult();
@@ -99,6 +101,15 @@ export class AppTest {
       action: async () => {
         initializeTest();
         await testConnection();
+        const result = printResult();
+        return result;
+      },
+    },
+    {
+      label: "test bond",
+      action: async () => {
+        initializeTest();
+        await testBond();
         const result = printResult();
         return result;
       },
