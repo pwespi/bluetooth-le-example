@@ -6,6 +6,8 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 export namespace Components {
+    interface AppEv {
+    }
     interface AppHome {
     }
     interface AppHumigadget {
@@ -18,6 +20,12 @@ export namespace Components {
     }
 }
 declare global {
+    interface HTMLAppEvElement extends Components.AppEv, HTMLStencilElement {
+    }
+    var HTMLAppEvElement: {
+        prototype: HTMLAppEvElement;
+        new (): HTMLAppEvElement;
+    };
     interface HTMLAppHomeElement extends Components.AppHome, HTMLStencilElement {
     }
     var HTMLAppHomeElement: {
@@ -49,6 +57,7 @@ declare global {
         new (): HTMLAppTestElement;
     };
     interface HTMLElementTagNameMap {
+        "app-ev": HTMLAppEvElement;
         "app-home": HTMLAppHomeElement;
         "app-humigadget": HTMLAppHumigadgetElement;
         "app-root": HTMLAppRootElement;
@@ -57,6 +66,8 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    interface AppEv {
+    }
     interface AppHome {
     }
     interface AppHumigadget {
@@ -68,6 +79,7 @@ declare namespace LocalJSX {
     interface AppTest {
     }
     interface IntrinsicElements {
+        "app-ev": AppEv;
         "app-home": AppHome;
         "app-humigadget": AppHumigadget;
         "app-root": AppRoot;
@@ -79,6 +91,7 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            "app-ev": LocalJSX.AppEv & JSXBase.HTMLAttributes<HTMLAppEvElement>;
             "app-home": LocalJSX.AppHome & JSXBase.HTMLAttributes<HTMLAppHomeElement>;
             "app-humigadget": LocalJSX.AppHumigadget & JSXBase.HTMLAttributes<HTMLAppHumigadgetElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
