@@ -16,5 +16,10 @@ export async function testInit(): Promise<void> {
       }
       assert.is.not(BleClient, undefined);
     });
+
+    await it("should initialize", async () => {
+      await BleClient.initialize();
+      assert.is.not(BleClient, undefined);
+    });
   });
 }

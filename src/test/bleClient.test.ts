@@ -49,6 +49,11 @@ export async function testBleClient(): Promise<void> {
       assert.ok(deviceId.length > 0);
     });
 
+    await it("should not throw when disconnecting", async () => {
+      await BleClient.disconnect(deviceId);
+      assert.ok(device);
+    });
+
     await it("should connect", async () => {
       await BleClient.connect(deviceId);
       assert.ok(device);
@@ -261,6 +266,11 @@ export async function testBleClient(): Promise<void> {
       await BleClient.disconnect(deviceId);
       assert.is(receivedDisconnectedEvent as boolean, true);
       assert.is(disconnectedFrom, deviceId);
+    });
+
+    await it("should not throw when disconnecting", async () => {
+      await BleClient.disconnect(deviceId);
+      assert.ok(device);
     });
   });
 }
