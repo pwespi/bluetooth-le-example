@@ -20,6 +20,7 @@ import {
 } from "../helpers/ble";
 import { showAlert } from "../helpers/showAlert";
 import { sleep } from "../helpers/sleep";
+import { assertThrows } from "./assertThrows";
 
 import { describe, it } from "./testRunner";
 
@@ -247,6 +248,33 @@ export async function testBleClient(): Promise<void> {
         POLAR_PMD_SERVICE,
         POLAR_PMD_DATA,
       );
+    });
+
+    await it("should throw when reading inexistent characteristic", async () => {
+      await assertThrows(async () => {
+        await BleClient.read(deviceId, "0000", "0001");
+      });
+      await assertThrows(async () => {
+        await BleClient.read(deviceId, POLAR_PMD_SERVICE, "0001");
+      });
+    });
+
+    await it("should throw when writing inexistent characteristic", async () => {
+      await assertThrows(async () => {
+        await BleClient.write(deviceId, "0000", "0001", numbersToDataView([1]));
+      });
+      await assertThrows(async () => {
+        await BleClient.write(deviceId, POLAR_PMD_SERVICE, "0001", numbersToDataView([1]));
+      });
+    });
+
+    await it("should throw when starting notifications on inexistent characteristic", async () => {
+      await assertThrows(async () => {
+        await BleClient.startNotifications(deviceId, "0000", "0001", value => console.log(value));
+      });
+      await assertThrows(async () => {
+        await BleClient.startNotifications(deviceId, POLAR_PMD_SERVICE, "0001", value => console.log(value));
+      });
     });
 
     await it("should disconnect", async () => {
