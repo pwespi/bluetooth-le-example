@@ -277,6 +277,24 @@ export async function testBleClient(): Promise<void> {
       });
     });
 
+    await it("should throw when reading characteristic that does not support read", async () => {
+      await assertThrows(async () => {
+        await BleClient.read(deviceId, HEART_RATE_SERVICE, HEART_RATE_MEASUREMENT_CHARACTERISTIC);
+      });
+    });
+
+    await it("should throw when writing to characteristic that does not support write", async () => {
+      await assertThrows(async () => {
+        await BleClient.write(deviceId, HEART_RATE_SERVICE, BODY_SENSOR_LOCATION_CHARACTERISTIC, numbersToDataView([1]));
+      });
+    });
+
+    await it("should throw when starting notifications on characteristic that does not support notifications", async () => {
+      await assertThrows(async () => {
+        await BleClient.startNotifications(deviceId, HEART_RATE_SERVICE, BODY_SENSOR_LOCATION_CHARACTERISTIC, value => console.log(value));
+      });
+    });
+
     await it("should disconnect", async () => {
       await BleClient.disconnect(deviceId);
       assert.ok(true);

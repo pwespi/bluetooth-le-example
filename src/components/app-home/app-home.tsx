@@ -167,6 +167,19 @@ export class AppHome {
       },
     },
     {
+      label: "start notifications (fail)",
+      action: () => {
+        return BleClient.startNotifications(
+          this.deviceId,
+          HEART_RATE_SERVICE,
+          BODY_SENSOR_LOCATION_CHARACTERISTIC,
+          value => {
+            console.log(value);
+          },
+        );
+      },
+    },
+    {
       label: "start notifications HR",
       action: () => {
         this.heartRate = [];
