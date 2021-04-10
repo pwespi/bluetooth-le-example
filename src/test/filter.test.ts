@@ -122,8 +122,12 @@ async function scan(
   options: RequestBleDeviceOptions,
   expectedNumberOfResults: number,
 ): Promise<void> {
-  if (Capacitor.getPlatform() === "web") {
+  const isMac = window.navigator.platform.toLowerCase().startsWith("mac");
+  const isWeb = Capacitor.getPlatform() === "web";
+  if (isWeb) {
     await showAlert(expectedNumberOfResults.toString());
+  }
+  if (isWeb && !isMac) {
     try {
       await BleClient.requestDevice(options);
     } catch (error) {
