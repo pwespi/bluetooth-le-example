@@ -20,8 +20,8 @@ import {
 } from "../helpers/ble";
 import { showAlert } from "../helpers/showAlert";
 import { sleep } from "../helpers/sleep";
-import { assertThrows } from "./assertThrows";
 
+import { assertThrows } from "./assertThrows";
 import { describe, it } from "./testRunner";
 
 export async function testBleClient(): Promise<void> {
@@ -264,34 +264,60 @@ export async function testBleClient(): Promise<void> {
         await BleClient.write(deviceId, "0000", "0001", numbersToDataView([1]));
       });
       await assertThrows(async () => {
-        await BleClient.write(deviceId, POLAR_PMD_SERVICE, "0001", numbersToDataView([1]));
+        await BleClient.write(
+          deviceId,
+          POLAR_PMD_SERVICE,
+          "0001",
+          numbersToDataView([1]),
+        );
       });
     });
 
     await it("should throw when starting notifications on inexistent characteristic", async () => {
       await assertThrows(async () => {
-        await BleClient.startNotifications(deviceId, "0000", "0001", value => console.log(value));
+        await BleClient.startNotifications(deviceId, "0000", "0001", value =>
+          console.log(value),
+        );
       });
       await assertThrows(async () => {
-        await BleClient.startNotifications(deviceId, POLAR_PMD_SERVICE, "0001", value => console.log(value));
+        await BleClient.startNotifications(
+          deviceId,
+          POLAR_PMD_SERVICE,
+          "0001",
+          value => console.log(value),
+        );
       });
     });
 
     await it("should throw when reading characteristic that does not support read", async () => {
       await assertThrows(async () => {
-        await BleClient.read(deviceId, HEART_RATE_SERVICE, HEART_RATE_MEASUREMENT_CHARACTERISTIC);
+        await BleClient.read(
+          deviceId,
+          HEART_RATE_SERVICE,
+          HEART_RATE_MEASUREMENT_CHARACTERISTIC,
+        );
       });
     });
 
     await it("should throw when writing to characteristic that does not support write", async () => {
       await assertThrows(async () => {
-        await BleClient.write(deviceId, HEART_RATE_SERVICE, BODY_SENSOR_LOCATION_CHARACTERISTIC, numbersToDataView([1]));
+        await BleClient.write(
+          deviceId,
+          HEART_RATE_SERVICE,
+          BODY_SENSOR_LOCATION_CHARACTERISTIC,
+          numbersToDataView([1]),
+        );
       });
     });
 
     await it("should throw when starting notifications on characteristic that does not support notifications", async () => {
       await assertThrows(async () => {
-        await BleClient.startNotifications(deviceId, HEART_RATE_SERVICE, BODY_SENSOR_LOCATION_CHARACTERISTIC, value => console.log(value));
+        await BleClient.startNotifications(
+          deviceId,
+          HEART_RATE_SERVICE,
+          BODY_SENSOR_LOCATION_CHARACTERISTIC,
+          value => console.log(value),
+        );
       });
     });
 
