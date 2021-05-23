@@ -2,7 +2,6 @@
 	"appId": "com.wespiapps.bluetoothle.example",
 	"appName": "BLE Example",
 	"bundledWebRuntime": false,
-	"npmClient": "npm",
 	"webDir": "www",
 	"plugins": {
 		"SplashScreen": {
