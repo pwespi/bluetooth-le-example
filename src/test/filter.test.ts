@@ -1,11 +1,11 @@
-import type {
-  RequestBleDeviceOptions,
-  ScanResult,
-} from "@capacitor-community/bluetooth-le";
 import {
   numberToUUID,
   BleClient,
   ScanMode,
+} from "@capacitor-community/bluetooth-le";
+import type {
+  RequestBleDeviceOptions,
+  ScanResult,
 } from "@capacitor-community/bluetooth-le";
 import { Capacitor } from "@capacitor/core";
 import * as assert from "uvu/assert";
