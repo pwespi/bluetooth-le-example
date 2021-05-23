@@ -47,9 +47,8 @@ export async function testBleScan(): Promise<void> {
       assert.is(manufacturerData.getUint8(0), 238);
       assert.is(manufacturerData.getUint8(1), 0);
       assert.is(manufacturerData.getUint8(2), 255);
-      const serviceData = scanResult!.serviceData![
-        "0000180d-0000-1000-8000-00805f9b34fb"
-      ];
+      const serviceData =
+        scanResult!.serviceData!["0000180d-0000-1000-8000-00805f9b34fb"];
       assert.is(serviceData.getUint8(0), 255);
       assert.is(serviceData.getUint8(1), 0);
       assert.is(serviceData.getUint8(2), 238);
