@@ -351,7 +351,7 @@ export class AppHome {
       },
     },
     {
-      label: "read",
+      label: "read 12",
       action: () => {
         return BleClient.read(
           this.deviceId,
@@ -361,7 +361,17 @@ export class AppHome {
       },
     },
     {
-      label: "write",
+      label: "read 13",
+      action: () => {
+        return BleClient.read(
+          this.deviceId,
+          numberToUUID(0x1111),
+          numberToUUID(0x1113),
+        );
+      },
+    },
+    {
+      label: "write 13",
       action: () => {
         this.counter++;
         return BleClient.write(
@@ -373,7 +383,7 @@ export class AppHome {
       },
     },
     {
-      label: "write (fail)",
+      label: "write 12 (fail)",
       action: () => {
         this.counter++;
         return BleClient.write(
@@ -385,13 +395,25 @@ export class AppHome {
       },
     },
     {
-      label: "write without response",
+      label: "write without response 12",
       action: () => {
         this.counter++;
         return BleClient.writeWithoutResponse(
           this.deviceId,
           numberToUUID(0x1111),
           numberToUUID(0x1112),
+          numbersToDataView([this.counter]),
+        );
+      },
+    },
+    {
+      label: "write without response 13 (fail)",
+      action: () => {
+        this.counter++;
+        return BleClient.writeWithoutResponse(
+          this.deviceId,
+          numberToUUID(0x1111),
+          numberToUUID(0x1113),
           numbersToDataView([this.counter]),
         );
       },
