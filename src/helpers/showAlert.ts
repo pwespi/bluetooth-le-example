@@ -14,3 +14,30 @@ export async function showAlert(message: string): Promise<void> {
   await alert.present();
   await alert.onDidDismiss();
 }
+
+export async function confirmAlert(message?: string): Promise<boolean> {
+  let confirm = false;
+
+  const alert = await alertController.create({
+    header: "Confirm",
+    message,
+    buttons: [
+      {
+        text: "No",
+        role: "cancel",
+        cssClass: "secondary",
+      },
+      {
+        text: "Yes",
+        handler: () => {
+          confirm = true;
+        },
+      },
+    ],
+  });
+
+  await alert.present();
+  await alert.onDidDismiss();
+
+  return confirm;
+}

@@ -1,3 +1,4 @@
+import type { DisplayStrings } from "@capacitor-community/bluetooth-le";
 import {
   BleClient,
   dataViewToText,
@@ -75,6 +76,30 @@ export class AppHome {
       label: "stop enabled notifications",
       action: () => {
         return BleClient.stopEnabledNotifications();
+      },
+    },
+    {
+      label: "set display EN",
+      action: () => {
+        const displayStrings: DisplayStrings = {
+          scanning: "Scanning...",
+          cancel: "Cancel",
+          availableDevices: "Available devices",
+          noDeviceFound: "No device found",
+        };
+        return BleClient.setDisplayStrings(displayStrings);
+      },
+    },
+    {
+      label: "set display DE",
+      action: () => {
+        const displayStrings: DisplayStrings = {
+          scanning: "Am Scannen...",
+          cancel: "Abbrechen",
+          availableDevices: "Verfügbare Geräte",
+          noDeviceFound: "Kein Gerät gefunden",
+        };
+        return BleClient.setDisplayStrings(displayStrings);
       },
     },
     {

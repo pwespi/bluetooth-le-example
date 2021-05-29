@@ -7,6 +7,7 @@ import { testBleClient } from "../../test/bleClient.test";
 import { testBleScan } from "../../test/bleScan.test";
 import { testBond } from "../../test/bond.test";
 import { testConnection } from "../../test/connection.test";
+import { testDisplayStrings } from "../../test/displayStrings.test";
 import { testEnabled } from "../../test/enabled.test";
 import { testFilters } from "../../test/filter.test";
 import { testInit } from "../../test/initialize.test";
@@ -56,6 +57,15 @@ export class AppTest {
       action: async () => {
         initializeTest();
         await testBleClient();
+        const result = printResult();
+        return result;
+      },
+    },
+    {
+      label: "test display strings",
+      action: async () => {
+        initializeTest();
+        await testDisplayStrings();
         const result = printResult();
         return result;
       },
