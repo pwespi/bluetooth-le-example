@@ -1,4 +1,7 @@
-import { CapacitorConfig } from "@capacitor/cli";
+/// <reference types="@capacitor-community/bluetooth-le" />
+/// <reference types="@capacitor/splash-screen" />
+
+import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
   appId: "com.wespiapps.bluetoothle.example",
@@ -12,7 +15,7 @@ const config: CapacitorConfig = {
     BluetoothLe: {
       displayStrings: {
         scanning: "Am Scannen...",
-        cancel: "Abbrechen",
+        //cancel: "Abbrechen",
         availableDevices: "Verfügbare Geräte",
         noDeviceFound: "Kein Gerät gefunden",
       },
