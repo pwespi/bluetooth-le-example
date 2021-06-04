@@ -65,6 +65,13 @@ export class AppHome {
       },
     },
     {
+      label: "is enabled",
+      action: async () => {
+        const result = await BleClient.isEnabled();
+        return result;
+      },
+    },
+    {
       label: "start enabled notifications",
       action: () => {
         return BleClient.startEnabledNotifications(state =>

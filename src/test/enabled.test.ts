@@ -13,7 +13,7 @@ export async function testEnabled(): Promise<void> {
       let state: boolean;
 
       await it("should return true when enabled", async () => {
-        state = await BleClient.getEnabled();
+        state = await BleClient.isEnabled();
         assert.is(state, true);
       });
 
@@ -29,7 +29,7 @@ export async function testEnabled(): Promise<void> {
       });
 
       await it("should return false when disabled", async () => {
-        state = await BleClient.getEnabled();
+        state = await BleClient.isEnabled();
         assert.is(state, false);
       });
 
@@ -44,20 +44,20 @@ export async function testEnabled(): Promise<void> {
         await BleClient.stopEnabledNotifications();
         await showAlert("Turn off Bluetooth");
         assert.is(state, true);
-        state = await BleClient.getEnabled();
+        state = await BleClient.isEnabled();
         assert.is(state, false);
       });
 
       await it("should turn on again", async () => {
         await showAlert("Turn on Bluetooth");
-        state = await BleClient.getEnabled();
+        state = await BleClient.isEnabled();
         assert.is(state, true);
       });
     });
   } else {
     await describe("Bluetooth state", async () => {
       await it("should report true on web", async () => {
-        const state = await BleClient.getEnabled();
+        const state = await BleClient.isEnabled();
         assert.is(state, true);
       });
 
