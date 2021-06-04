@@ -9,7 +9,7 @@ readJson("./package.json", console.error, false, (error, data) => {
   }
 
   // console.log('the package data is', data)
-  const capacitorVersion = data?.devDependencies?.["@capacitor/core"];
+  const capacitorVersion = data?.dependencies?.["@capacitor/core"];
   console.log(capacitorVersion);
 
   fs.writeFile(
