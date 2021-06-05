@@ -1,4 +1,7 @@
-import type { DisplayStrings } from "@capacitor-community/bluetooth-le";
+import {
+  DisplayStrings,
+  textToDataView,
+} from "@capacitor-community/bluetooth-le";
 import {
   BleClient,
   dataViewToText,
@@ -447,6 +450,18 @@ export class AppHome {
           numberToUUID(0x1111),
           numberToUUID(0x1113),
           numbersToDataView([this.counter]),
+        );
+      },
+    },
+    {
+      label: "write string",
+      action: () => {
+        this.counter++;
+        return BleClient.write(
+          this.deviceId,
+          numberToUUID(0x1111),
+          numberToUUID(0x1113),
+          textToDataView("string"),
         );
       },
     },
