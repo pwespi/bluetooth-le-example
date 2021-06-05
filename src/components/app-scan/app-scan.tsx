@@ -13,6 +13,7 @@ import {
 } from "../../helpers/ble";
 import { handleError } from "../../helpers/error";
 import { resultToString } from "../../helpers/helpers";
+import { sleep } from "../../helpers/sleep";
 import { scan } from "../../helpers/usageScan";
 
 @Component({
@@ -106,6 +107,20 @@ export class AppScan {
       label: "stop scan",
       action: () => {
         return BleClient.stopLEScan();
+      },
+    },
+    {
+      label: "scan cycles",
+      action: async () => {
+        for (const i of Array.from({ length: 10 }).map((_, i) => i + 1)) {
+          console.log(i);
+          await BleClient.requestLEScan({}, result =>
+            this.logScanResult(result),
+          );
+          await sleep(2000);
+          await BleClient.stopLEScan();
+          await sleep(2000);
+        }
       },
     },
     {
