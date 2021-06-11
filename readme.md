@@ -4,14 +4,16 @@
 # install packages
 npm i
 
+# for development
+npm run start
+npx cap run android
+npx cap run ios
+
 # build and sync for Android
 npm run build:android
 
 # build and sync for iOS
 npm run build:ios
-
-# for development
-npm run start
 
 # run web version locally
 npm run serve
@@ -23,12 +25,11 @@ npx cap open android
 npx cap open android
 ```
 
-Add IP address to `capacitor.config.json`:
+Add IP address to `capacitor.config.ts`:
 
-```JSON
-{
-  "server": {
-    "url": "http://192.168.178.43:3333"
+```ts
+  server: {
+    url: "http://192.168.178.24:3333",
+    cleartext: true,
   }
-}
 ```
