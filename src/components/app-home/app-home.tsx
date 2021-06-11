@@ -24,7 +24,7 @@ import {
   BATTERY_SERVICE,
   BATTERY_CHARACTERISTIC,
 } from "../../helpers/ble";
-import { handleError } from "../../helpers/error";
+import { handleError, toast } from "../../helpers/error";
 import { resultToString, Target } from "../../helpers/helpers";
 import { main } from "../../helpers/usage";
 import { getVersion } from "../../helpers/version";
@@ -387,22 +387,26 @@ export class AppHome {
     },
     {
       label: "read 12",
-      action: () => {
-        return BleClient.read(
+      action: async () => {
+        const r = await BleClient.read(
           this.deviceId,
           numberToUUID(0x1111),
           numberToUUID(0x1112),
         );
+        await toast(r.getInt8(0));
+        return r;
       },
     },
     {
       label: "read 13",
-      action: () => {
-        return BleClient.read(
+      action: async () => {
+        const r = await BleClient.read(
           this.deviceId,
           numberToUUID(0x1111),
           numberToUUID(0x1113),
         );
+        await toast(r.getInt8(0));
+        return r;
       },
     },
     {
@@ -462,6 +466,20 @@ export class AppHome {
           numberToUUID(0x1111),
           numberToUUID(0x1113),
           textToDataView("string"),
+        );
+      },
+    },
+    {
+      label: "write arraybuffer (fail)",
+      action: () => {
+        this.counter++;
+        return BleClient.write(
+          this.deviceId,
+          numberToUUID(0x1111),
+          numberToUUID(0x1113),
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          numbersToDataView([this.counter]).buffer,
         );
       },
     },

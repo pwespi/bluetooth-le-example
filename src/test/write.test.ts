@@ -9,6 +9,7 @@ import { Capacitor } from "@capacitor/core";
 import * as assert from "uvu/assert";
 
 import { showAlert } from "../helpers/showAlert";
+import { assertThrows } from "./assertThrows";
 
 import { describe, it } from "./testRunner";
 
@@ -82,6 +83,29 @@ export async function testWrite(): Promise<void> {
         numberToUUID(0x1113),
       );
       assert.is(after.getUint8(0), 5);
+    });
+
+    await it("should reject when writing an ArrayBuffer instead of a DataView", async () => {
+      await assertThrows(async () => {
+        await BleClient.write(
+          deviceId,
+          numberToUUID(0x1111),
+          numberToUUID(0x1113),
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          numbersToDataView([0]).buffer,
+        );
+      });
+      await assertThrows(async () => {
+        await BleClient.writeWithoutResponse(
+          deviceId,
+          numberToUUID(0x1111),
+          numberToUUID(0x1112),
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          numbersToDataView([0]).buffer,
+        );
+      });
     });
 
     await it("should disconnect", async () => {
