@@ -16,7 +16,7 @@ npm run build:android
 npm run build:ios
 
 # run web version locally
-npm run serve
+npm run serve:prod
 
 # open Android Studio
 npx cap open android

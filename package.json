@@ -22,34 +22,34 @@
     "clean": "rimraf www",
     "build:android": "npm run build && npx cap sync android",
     "build:ios": "npm run build && npx cap sync ios",
-    "serve": "serve -s www",
+    "serve:prod": "serve -s www",
     "version": "node scripts/version.js"
   },
   "devDependencies": {
-    "@capacitor/cli": "^3.0.1",
+    "@capacitor/cli": "^3.0.2",
     "@ionic/eslint-config": "^0.3.0",
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@stencil/core": "^2.6.0",
     "@stencil/eslint-plugin": "^0.3.1",
     "@types/jest": "^26.0.23",
-    "@typescript-eslint/eslint-plugin": "^4.26.1",
-    "@typescript-eslint/parser": "^4.26.1",
-    "eslint": "^7.28.0",
+    "@typescript-eslint/eslint-plugin": "^4.28.1",
+    "@typescript-eslint/parser": "^4.28.1",
+    "eslint": "^7.30.0",
     "eslint-plugin-react": "^7.24.0",
-    "jest": "^27.0.4",
-    "prettier": "^2.3.1",
+    "jest": "^27.0.6",
+    "prettier": "^2.3.2",
     "read-package-json": "^3.0.1",
     "rimraf": "^3.0.2",
     "serve": "^12.0.0",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.5"
   },
   "dependencies": {
     "@capacitor-community/bluetooth-le": "file:../bluetooth-le",
-    "@capacitor/android": "^3.0.1",
-    "@capacitor/core": "^3.0.1",
-    "@capacitor/ios": "^3.0.1",
-    "@capacitor/splash-screen": "^1.0.1",
-    "@ionic/core": "^5.6.9",
+    "@capacitor/android": "^3.0.2",
+    "@capacitor/core": "^3.0.2",
+    "@capacitor/ios": "^3.0.2",
+    "@capacitor/splash-screen": "^1.0.2",
+    "@ionic/core": "^5.6.11",
     "uvu": "^0.5.1"
   }
 }
